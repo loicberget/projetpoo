@@ -3,6 +3,11 @@ package com.myrpg.game.screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.profiling.GLProfiler;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -16,14 +21,24 @@ public class GameScreen extends AbstractScreen {
     private final BodyDef bodyDef;
     private final FixtureDef fixtureDef;
     private final Body player;
+    private final OrthogonalTiledMapRenderer mapRenderer;
+    private final AssetManager assetManager;
+    private final OrthographicCamera gameCamera;
+    private final GLProfiler profiler;
 
     // constructor
     public GameScreen(final rpg_game context) {
         super(context);
 
-        // Instantiation of body and fixture definition
+        // Instantiation of the private final variable
+        this.assetManager = context.getAssetManager();
+        this.gameCamera = context.getGameCamera();
+        mapRenderer = new OrthogonalTiledMapRenderer(null, UNIT_SCALE, context.getSpriteBatch());
         bodyDef = new BodyDef();
         fixtureDef = new FixtureDef();
+
+        profiler = new GLProfiler(Gdx.graphics);
+        profiler.enable();
 
         // create a player
         bodyDef.position.set(4.5f, 3);
@@ -56,7 +71,7 @@ public class GameScreen extends AbstractScreen {
         fixtureDef.filter.categoryBits = BIT_GROUND;
         fixtureDef.filter.maskBits = -1;
         final ChainShape chainShape = new ChainShape();
-        chainShape.createLoop(new float []{1, 1, 1, 15, 8, 15, 8, 1});
+        chainShape.createLoop(new float []{1, 1, 1, 8, 21, 8, 21, 1});
         fixtureDef.shape = chainShape;
         body.createFixture(fixtureDef);
         chainShape.dispose();
@@ -64,7 +79,8 @@ public class GameScreen extends AbstractScreen {
 
     @Override
     public void show() {
-
+        // set the map
+        mapRenderer.setMap(assetManager.get("map/map.tmx", TiledMap.class));
     }
 
     @Override
@@ -76,18 +92,18 @@ public class GameScreen extends AbstractScreen {
 
         // Left and right movement
         if(Gdx.input.isKeyPressed(Input.Keys.LEFT)){
-            speedX = -3;
+            speedX = -10;
         } else if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
-            speedX = 3;
+            speedX = 10;
         } else {
             speedX = 0;
         }
 
         // Up and down movement
         if(Gdx.input.isKeyPressed(Input.Keys.DOWN)){
-            speedY = -3;
+            speedY = -10;
         } else if(Gdx.input.isKeyPressed(Input.Keys.UP)){
-            speedY = 3;
+            speedY = 10;
         } else {
             speedY = 0;
         }
@@ -100,12 +116,10 @@ public class GameScreen extends AbstractScreen {
                 true
         );
 
-        // if any key is pressed -> change the screen
-        if(Gdx.input.isKeyPressed(Input.Keys.ESCAPE)){
-            context.setScreen(ScreenType.LOADING);
-        }
 
         viewport.apply(true);
+        mapRenderer.setView(gameCamera);
+        mapRenderer.render();
         box2DDebugRenderer.render(world, viewport.getCamera().combined);
     }
 
@@ -127,6 +141,6 @@ public class GameScreen extends AbstractScreen {
 
     @Override
     public void dispose() {
-
+        mapRenderer.dispose();
     }
 }
