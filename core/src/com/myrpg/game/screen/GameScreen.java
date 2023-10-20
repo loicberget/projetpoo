@@ -2,7 +2,6 @@ package com.myrpg.game.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
@@ -10,10 +9,9 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.myrpg.game.map.CollisionArea;
+import com.myrpg.game.map.Map;
 import com.myrpg.game.rpg_game;
-
-import java.awt.*;
 
 import static com.myrpg.game.rpg_game.*;
 
@@ -25,6 +23,7 @@ public class GameScreen extends AbstractScreen {
     private final AssetManager assetManager;
     private final OrthographicCamera gameCamera;
     private final GLProfiler profiler;
+    private final com.myrpg.game.map.Map map;
 
     // constructor
     public GameScreen(final rpg_game context) {
@@ -41,7 +40,7 @@ public class GameScreen extends AbstractScreen {
         profiler.enable();
 
         // create a player
-        bodyDef.position.set(4.5f, 3);
+        bodyDef.position.set(9, 3);
         bodyDef.gravityScale = 1;
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         player = world.createBody(bodyDef);
@@ -53,34 +52,58 @@ public class GameScreen extends AbstractScreen {
         fixtureDef.filter.categoryBits = BIT_PLAYER;
         fixtureDef.filter.maskBits = BIT_GROUND;
         final PolygonShape pShape = new PolygonShape();
-        pShape.setAsBox(0.5f, 0.5f);
+        pShape.setAsBox(0.4f, 0.4f);
         fixtureDef.shape = pShape;
         player.createFixture(fixtureDef);
         pShape.dispose();
 
-        // create a room
+
+        // set the map
+        final TiledMap tiledMap = assetManager.get("map/map.tmx", TiledMap.class);
+        mapRenderer.setMap(tiledMap);
+        map = new Map(tiledMap);
+
+        spawnCollisionAreas();
+    }
+
+    private void resetBodyandFixtureDefinition(){
         bodyDef.position.set(0, 0);
         bodyDef.gravityScale = 1;
         bodyDef.type = BodyDef.BodyType.StaticBody;
-        final Body body = world.createBody(bodyDef);
-        body.setUserData("GROUND");
+        bodyDef.fixedRotation = false;
 
+        fixtureDef.density = 0;
         fixtureDef.isSensor = false;
         fixtureDef.restitution = 0;
         fixtureDef.friction = 0.2f;
-        fixtureDef.filter.categoryBits = BIT_GROUND;
+        fixtureDef.filter.categoryBits = 0x0001;
         fixtureDef.filter.maskBits = -1;
-        final ChainShape chainShape = new ChainShape();
-        chainShape.createLoop(new float []{1, 1, 1, 8, 21, 8, 21, 1});
-        fixtureDef.shape = chainShape;
-        body.createFixture(fixtureDef);
-        chainShape.dispose();
+    }
+
+    private void spawnCollisionAreas(){
+        for(final CollisionArea collisionArea : map.getCollisionAreas()) {
+            resetBodyandFixtureDefinition();
+
+            // create a room
+            bodyDef.position.set(collisionArea.getX(), collisionArea.getY());
+            bodyDef.fixedRotation = true;
+            final Body body = world.createBody(bodyDef);
+            body.setUserData("GROUND");
+
+            fixtureDef.filter.categoryBits = BIT_GROUND;
+            fixtureDef.filter.maskBits = -1;
+
+            final ChainShape chainShape = new ChainShape();
+            chainShape.createChain(collisionArea.getVertices());
+            fixtureDef.shape = chainShape;
+            body.createFixture(fixtureDef);
+            chainShape.dispose();
+        }
     }
 
     @Override
     public void show() {
-        // set the map
-        mapRenderer.setMap(assetManager.get("map/map.tmx", TiledMap.class));
+
     }
 
     @Override
