@@ -16,6 +16,7 @@ import com.myrpg.game.rpg_game;
 import static com.myrpg.game.rpg_game.*;
 
 public class GameScreen extends AbstractScreen {
+    public static final String TAG = GameScreen.class.getSimpleName();
     private final BodyDef bodyDef;
     private final FixtureDef fixtureDef;
     private final Body player;
@@ -39,8 +40,17 @@ public class GameScreen extends AbstractScreen {
         profiler = new GLProfiler(Gdx.graphics);
         profiler.enable();
 
+        // set the map
+        final TiledMap tiledMap = assetManager.get("map/map.tmx", TiledMap.class);
+        mapRenderer.setMap(tiledMap);
+        map = new Map(tiledMap);
+
+        spawnCollisionAreas();
+
         // create a player
-        bodyDef.position.set(9, 3);
+        //bodyDef.position.set(9,3);
+        bodyDef.position.set(map.getStartLocation());
+        Gdx.app.debug(TAG, "Player starting location: " + bodyDef.position);
         bodyDef.gravityScale = 1;
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         player = world.createBody(bodyDef);
@@ -56,14 +66,6 @@ public class GameScreen extends AbstractScreen {
         fixtureDef.shape = pShape;
         player.createFixture(fixtureDef);
         pShape.dispose();
-
-
-        // set the map
-        final TiledMap tiledMap = assetManager.get("map/map.tmx", TiledMap.class);
-        mapRenderer.setMap(tiledMap);
-        map = new Map(tiledMap);
-
-        spawnCollisionAreas();
     }
 
     private void resetBodyandFixtureDefinition(){
