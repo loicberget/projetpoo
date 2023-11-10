@@ -8,10 +8,13 @@ import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.myrpg.game.map.CollisionArea;
 import com.myrpg.game.map.Map;
 import com.myrpg.game.rpg_game;
+import com.myrpg.game.ui.GameUI;
 
 import static com.myrpg.game.rpg_game.*;
 
@@ -48,7 +51,6 @@ public class GameScreen extends AbstractScreen {
         spawnCollisionAreas();
 
         // create a player
-        //bodyDef.position.set(9,3);
         bodyDef.position.set(map.getStartLocation());
         Gdx.app.debug(TAG, "Player starting location: " + bodyDef.position);
         bodyDef.gravityScale = 1;
@@ -66,6 +68,11 @@ public class GameScreen extends AbstractScreen {
         fixtureDef.shape = pShape;
         player.createFixture(fixtureDef);
         pShape.dispose();
+    }
+
+    @Override
+    protected Table getScreenUI(Skin skin) {
+        return new GameUI(stage, skin);
     }
 
     private void resetBodyandFixtureDefinition(){
@@ -140,7 +147,6 @@ public class GameScreen extends AbstractScreen {
                 player.getWorldCenter().y,
                 true
         );
-
 
         viewport.apply(true);
         mapRenderer.setView(gameCamera);

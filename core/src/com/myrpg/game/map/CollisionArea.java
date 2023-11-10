@@ -5,7 +5,6 @@ import com.badlogic.gdx.math.Vector2;
 import static com.myrpg.game.rpg_game.UNIT_SCALE;
 
 public class CollisionArea {
-    //private static Vector2 startLocation = null;
     private final float x;
     private final float y;
     private final float[] vertices;
@@ -20,10 +19,6 @@ public class CollisionArea {
             vertices[i+1] = vertices[i+1] * UNIT_SCALE;
         }
     }
-    /*
-    public static Vector2 getStartLocation() {
-        return startLocation;
-    }*/
 
     public float[] getVertices() {
         return vertices;

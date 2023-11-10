@@ -2,22 +2,25 @@ package com.myrpg.game;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.SkinLoader;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2D;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.myrpg.game.screen.AbstractScreen;
-import com.myrpg.game.screen.LoadingScreen;
 import com.myrpg.game.screen.ScreenType;
 
 import java.util.EnumMap;
@@ -38,7 +41,8 @@ public class rpg_game extends Game {
 	public static final short BIT_PLAYER = 1<<0; // 0001
 	public static final short BIT_GROUND = 1<<1; // 0010
 	private AssetManager assetManager;
-
+	private Stage stage;
+	private Skin skin;
 	@Override
 	public void create () {
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
@@ -56,6 +60,8 @@ public class rpg_game extends Game {
 		// Assets initialization
 		assetManager = new AssetManager();
 		assetManager.setLoader(TiledMap.class, new TmxMapLoader(assetManager.getFileHandleResolver()));
+		initializeSkin();
+		stage = new Stage(new FitViewport(800, 300), spriteBatch);
 
 		// Screen initialization
 		gameCamera = new OrthographicCamera();
@@ -65,7 +71,31 @@ public class rpg_game extends Game {
 
 	}
 
+	private void initializeSkin() {
+		// generate the ttf bitmaps
+		final ObjectMap<String, Object> resources = new ObjectMap<String, Object>();
+		final FreeTypeFontGenerator fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("ui/font.ttf"));
+		final FreeTypeFontGenerator.FreeTypeFontParameter fontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+		fontParameter.minFilter = Texture.TextureFilter.Linear;
+		fontParameter.magFilter	= Texture.TextureFilter.Linear;
+		final int[] sizesToCreate = {16, 20, 26, 32};
+		for(final int size : sizesToCreate) {
+			fontParameter.size = size;
+			resources.put("font_" + size, fontGenerator.generateFont(fontParameter)); // returns a bitmap fonts
+		}
+		fontGenerator.dispose();
+
+		// load skin
+		final SkinLoader.SkinParameter skinParameter= new SkinLoader.SkinParameter("ui/hud.atlas", resources);
+		assetManager.load("ui/hud.json", Skin.class, skinParameter);
+		assetManager.finishLoading();
+		skin = assetManager.get("ui/hud.json", Skin.class);
+
+	}
+
 	// Getters
+	public Skin getSkin() { return skin; }
+	public Stage getStage() { return stage; }
 	public SpriteBatch getSpriteBatch() { return spriteBatch; }
 	public AssetManager getAssetManager() { return assetManager; }
 	public OrthographicCamera getGameCamera() { return gameCamera;}
@@ -101,8 +131,6 @@ public class rpg_game extends Game {
 	public void render() {
 		super.render();
 
-		// Gdx.app.debug(TAG, "" + Gdx.graphics.getDeltaTime());
-
 		// Always the same speed for objects
 		accumulator += Math.min(0.25f, Gdx.graphics.getDeltaTime());
 		while(accumulator >= FIXED_TIME_STEP) {
@@ -111,6 +139,9 @@ public class rpg_game extends Game {
 		}
 
 		// final float alpha = accumulator / FIXED_TIME_STEP;
+		stage.getViewport().apply();
+		stage.act();
+		stage.draw();
 	}
 
 	@Override
@@ -120,5 +151,6 @@ public class rpg_game extends Game {
 		world.dispose();
 		assetManager.dispose();
 		spriteBatch.dispose();
+		stage.dispose();
 	}
 }

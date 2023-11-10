@@ -1,13 +1,19 @@
 package com.myrpg.game.screen;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.myrpg.game.map.Map;
 import com.myrpg.game.rpg_game;
+import com.myrpg.game.ui.LoadingUI;
 
 public class LoadingScreen extends AbstractScreen {
     private final AssetManager assetManager;
-
+    public static final String TAG = Map.class.getSimpleName();
     public LoadingScreen(final rpg_game context) {
         super(context);
 
@@ -16,48 +22,46 @@ public class LoadingScreen extends AbstractScreen {
     }
 
     @Override
-    public void show() {
-
+    protected Table getScreenUI(final Skin skin) {
+        Gdx.app.debug(TAG, "Loading screen UI");
+        return new LoadingUI(stage, skin);
     }
 
     @Override
-    public void render(float delta) {
+    public void render(final float delta) {
         // color of the loading screen
-        ScreenUtils.clear(0, 1, 0, 1);
-
-
+        ScreenUtils.clear(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        ((LoadingUI)screenUI).setProgress(assetManager.getProgress());
         // once the asset manager is done loading -> change the screen
-        if(assetManager.update())
+        if(assetManager.update()){
             context.setScreen(ScreenType.GAME);
-        /*
-        // if any key is pressed -> change the screen
-        if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
-            context.setScreen(ScreenType.GAME);
-        }*/
+        }
     }
 
     @Override
     public void resize(int width, int height) {
-
+        super.resize(width, height);
     }
 
     @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
+    public void show() {
+        super.show();
     }
 
     @Override
     public void hide() {
-
+        super.hide();
     }
 
     @Override
     public void dispose() {
-
+        super.dispose();
+    }
+    @Override
+    public void pause() {
+    }
+    @Override
+    public void resume() {
     }
 }
