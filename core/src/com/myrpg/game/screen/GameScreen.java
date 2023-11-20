@@ -29,13 +29,18 @@ public class GameScreen extends AbstractScreen {
     private final GLProfiler profiler;
     private final com.myrpg.game.map.Map map;
 
+
     // constructor
     public GameScreen(final rpg_game context) {
         super(context);
 
+        //viewport = context.getScreenViewport();
+
+
         // Instantiation of the private final variable
         this.assetManager = context.getAssetManager();
         this.gameCamera = context.getGameCamera();
+
         mapRenderer = new OrthogonalTiledMapRenderer(null, UNIT_SCALE, context.getSpriteBatch());
         bodyDef = new BodyDef();
         fixtureDef = new FixtureDef();
@@ -149,7 +154,7 @@ public class GameScreen extends AbstractScreen {
         );
 
         viewport.apply(true);
-        mapRenderer.setView(gameCamera);
+        mapRenderer.setView(gameCamera); // TODO :  Comparer avec les valeurs au breakpoint avec le fichier original (a retelecharger sur github)
         mapRenderer.render();
         box2DDebugRenderer.render(world, viewport.getCamera().combined);
     }
@@ -173,5 +178,10 @@ public class GameScreen extends AbstractScreen {
     @Override
     public void dispose() {
         mapRenderer.dispose();
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        super.resize(width, height);
     }
 }

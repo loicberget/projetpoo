@@ -35,7 +35,7 @@ public class LoadingScreen extends AbstractScreen {
         ((LoadingUI)screenUI).setProgress(assetManager.getProgress());
         // once the asset manager is done loading -> change the screen
         if(assetManager.update()){
-            context.setScreen(ScreenType.GAME);
+            context.setScreen(ScreenType.MENU);
         }
     }
 

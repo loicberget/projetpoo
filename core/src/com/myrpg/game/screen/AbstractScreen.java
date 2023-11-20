@@ -1,21 +1,41 @@
 package com.myrpg.game.screen;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.myrpg.game.audio.AudioManager;
+import com.myrpg.game.audio.AudioObserver;
+import com.myrpg.game.audio.AudioSubject;
+import com.myrpg.game.manager.ResourceManager;
 import com.myrpg.game.rpg_game;
+import com.myrpg.game.screen.transition.effects.TransitionEffect;
 
-public abstract class AbstractScreen implements Screen {
+import java.util.ArrayList;
+import java.util.List;
+
+public abstract class AbstractScreen implements Screen, AudioSubject {
     protected final rpg_game context;
-    protected final FitViewport viewport;
-    protected final World world;
-    protected final Box2DDebugRenderer box2DDebugRenderer;
-    protected final Stage stage;
-    protected final Table screenUI;
+    protected ResourceManager resourceManager;
+    private Array<AudioObserver> observers;
+    protected FitViewport viewport;
+    protected World world;
+    protected Box2DDebugRenderer box2DDebugRenderer;
+    protected Stage stage;
+    protected Table screenUI;
+    protected   AudioObserver.AudioTypeEvent musicTheme;
     public AbstractScreen(final rpg_game context) {
         this.context = context;
         viewport = context.getScreenViewport();
@@ -26,12 +46,54 @@ public abstract class AbstractScreen implements Screen {
         screenUI = getScreenUI(context.getSkin());
     }
 
+    public AbstractScreen(final rpg_game context, ResourceManager resourceManager) {
+        this.context = context;
+        this.resourceManager = resourceManager;
+        viewport = context.getScreenViewport(); // Added this line
+        observers = new Array<>();
+        AudioSubject.addObserver(AudioManager.getInstance());
+    }
+
+    public Table createTable() {
+        Table table = new Table();
+        table.setBounds(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        return table;
+    }
+
+    private TextureRegionDrawable createDrawableWithColor(int width, int height, Color color) {
+        Pixmap pixmap = new Pixmap(width, height, Pixmap.Format.RGBA8888);
+        pixmap.setColor(color);
+        pixmap.fill();
+        Texture texture = new Texture(pixmap);
+        pixmap.dispose();
+        return new TextureRegionDrawable(new TextureRegion(texture));
+    }
+
+    public void createButton(String buttonName, float posX, float posY, Table table) {
+        BitmapFont font = resourceManager.pixel10Bold; // Ensure this font is correctly initialized in ResourceManager
+        TextureRegionDrawable imageUp = createDrawableWithColor(70, 30, new Color(1, 0.65f, 0, 1));
+        TextureRegionDrawable imageDown = createDrawableWithColor(70, 30, new Color(0.8f, 0.52f, 0.25f, 1));
+
+        TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle(imageUp, imageDown, null, font);
+        TextButton button = new TextButton(buttonName, buttonStyle);
+        button.getLabel().setColor(new Color(0.31f, 0.31f, 0.46f, 1));
+
+        table.add(button).padLeft(posX).padTop(posY).row();
+    }
+
+    public void setScreenWithTransition(ScreenType current, ScreenType next, List<TransitionEffect> transitionEffects) {
+        Screen transitionScreen = new TransitionScreen(context, current, next, new ArrayList<>(transitionEffects));
+        context.setScreen(transitionScreen);
+    }
+
     protected abstract Table getScreenUI(final Skin skin);
+    // Get the current screen
+    public ScreenType getScreenClass() {return ScreenType.getScreenTypeByClass(this.getClass());    }
 
     @Override
     public void resize(final int width, final int height) {
-        viewport.update(width, height);
-        stage.getViewport().update(width, height, true);
+          viewport.update(width, height);
+          stage.getViewport().update(width, height, true);
     }
 
     @Override
@@ -46,5 +108,22 @@ public abstract class AbstractScreen implements Screen {
     @Override
     public void dispose() {
         stage.getRoot().removeActor(screenUI);
+    }
+
+    @Override
+    public void removeObserver(AudioObserver audioObserver) {
+
+    }
+
+    @Override
+    public void removeAllObservers() {
+
+    }
+
+    @Override
+    public void notify(AudioObserver.AudioCommand command, AudioObserver.AudioTypeEvent event) {
+        for (AudioObserver observer : observers) {
+            observer.onNotify(command, event);
+        }
     }
 }

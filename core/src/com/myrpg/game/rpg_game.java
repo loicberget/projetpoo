@@ -1,6 +1,9 @@
 package com.myrpg.game;
 
-import com.badlogic.gdx.*;
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.SkinLoader;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -17,21 +20,27 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.reflect.ClassReflection;
-import com.badlogic.gdx.utils.reflect.ReflectionException;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.myrpg.game.manager.PreferenceManager;
+import com.myrpg.game.manager.ResourceManager;
 import com.myrpg.game.screen.AbstractScreen;
+import com.myrpg.game.screen.GameScreen;
+import com.myrpg.game.screen.LoadingScreen;
 import com.myrpg.game.screen.ScreenType;
+import com.myrpg.game.screen.menu.MenuLoadGameScreen;
+import com.myrpg.game.screen.menu.MenuNewGameScreen;
+import com.myrpg.game.screen.menu.MenuScreen;
 
 import java.util.EnumMap;
-import java.util.Objects;
 
 public class rpg_game extends Game {
 	private static final String TAG = rpg_game.class.getSimpleName();
 	private EnumMap<ScreenType, AbstractScreen> screenCache;
 	private OrthographicCamera gameCamera;
 	private SpriteBatch spriteBatch;
-	private FitViewport screenViewport;
+	private ResourceManager resourceManager;
+	private PreferenceManager preferenceManager;
+
 	private World world;
 	private WorldContactListener worldContactListener;
 	private Box2DDebugRenderer box2DDebugRenderer;
@@ -43,6 +52,9 @@ public class rpg_game extends Game {
 	private AssetManager assetManager;
 	private Stage stage;
 	private Skin skin;
+	private FitViewport screenViewport;
+	private Gdx gdx;
+
 	@Override
 	public void create () {
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
@@ -68,6 +80,9 @@ public class rpg_game extends Game {
 		screenViewport = new FitViewport(24, 9, gameCamera); // I might need to change that to adapt it for a desktop game
 		screenCache = new EnumMap<ScreenType, AbstractScreen>(ScreenType.class); // Initialized the screen cache
 		setScreen(ScreenType.LOADING); // Starting on the loading screen
+
+		resourceManager = new ResourceManager();
+		preferenceManager = PreferenceManager.getInstance();
 
 	}
 
@@ -99,12 +114,15 @@ public class rpg_game extends Game {
 	public SpriteBatch getSpriteBatch() { return spriteBatch; }
 	public AssetManager getAssetManager() { return assetManager; }
 	public OrthographicCamera getGameCamera() { return gameCamera;}
-	public FitViewport getScreenViewport () { return screenViewport; }
+	public FitViewport getScreenViewport () { return screenViewport;}
 	public World getWorld() {
 		return world;
 	}
 	public Box2DDebugRenderer getBox2DDebugRenderer() {
 		return box2DDebugRenderer;
+	}
+	public PreferenceManager getPreferenceManager() {
+		return preferenceManager;
 	}
 
 
@@ -113,16 +131,36 @@ public class rpg_game extends Game {
 		final Screen screen = screenCache.get(screenType); // gets what's in the screen cache
 		if (screen == null) {
 			// if screen is not created yet  -> create it
-			try {
-				Gdx.app.debug(TAG, "Creating new screen: " + screenType);
-				final AbstractScreen newScreen = (AbstractScreen) ClassReflection.getConstructor(screenType.getScreenClass(), rpg_game.class).newInstance(this);
-				screenCache.put(screenType, newScreen); // Put the newScreen in the cache so that it doesn't create another one next time
-				setScreen (newScreen);
-			} catch (ReflectionException e) {
-				throw new GdxRuntimeException("Screen " + screenType + " could not be created", e);
+			Gdx.app.debug(TAG, "Creating new screen: " + screenType);
+			switch (screenType){
+				case GAME:
+					screenCache.put(screenType, new GameScreen(this));
+					setScreen(screenType.GAME);
+					break;
+				case MENU:
+					screenCache.put(screenType, new MenuScreen(this, resourceManager));
+					setScreen(screenType.MENU);
+					break;
+				case MENU_NEW_GAME:
+					screenCache.put(screenType, new MenuNewGameScreen(this, screenType.MENU_NEW_GAME, resourceManager));
+					setScreen(screenType.MENU_NEW_GAME);
+					break;
+				case MENU_LOAD_GAME:
+					screenCache.put(screenType, new MenuLoadGameScreen(this, screenType.MENU_LOAD_GAME, resourceManager));
+					setScreen(screenType.MENU_LOAD_GAME);
+					break;
+				case LOADING:
+					screenCache.put(screenType, new LoadingScreen(this));
+					setScreen(screenType.LOADING);
+					break;
+				default:
+					throw new GdxRuntimeException("Screen " + screenType + " is not recognized");
 			}
+			//final AbstractScreen newScreen = (AbstractScreen) ClassReflection.getConstructor(screenType.getScreenClass(), rpg_game.class).newInstance(this);
+			//screenCache.put(screenType, newScreen); // Put the newScreen in the cache so that it doesn't create another one next time
+			// setScreen (newScreen);
 		} else {
-			Gdx.app.debug(TAG, "Switching to new screen" + screenType);
+			Gdx.app.debug(TAG, "Switching to new screen " + screenType);
 			setScreen(screen);
 		}
 	}
