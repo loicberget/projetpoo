@@ -7,15 +7,17 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.myrpg.game.manager.ResourceManager;
 import com.myrpg.game.map.Map;
 import com.myrpg.game.rpg_game;
 import com.myrpg.game.ui.LoadingUI;
 
 public class LoadingScreen extends AbstractScreen {
+    private static final ResourceManager resourceManager = null;
     private final AssetManager assetManager;
     public static final String TAG = Map.class.getSimpleName();
     public LoadingScreen(final rpg_game context) {
-        super(context);
+        super(context, resourceManager);
 
         this.assetManager = context.getAssetManager();
         assetManager.load("map/map.tmx", TiledMap.class);

@@ -13,7 +13,6 @@ import com.badlogic.gdx.utils.Array;
 import com.myrpg.game.manager.ResourceManager;
 import com.myrpg.game.profile.ProfileManager;
 import com.myrpg.game.rpg_game;
-import com.myrpg.game.screen.AbstractScreen;
 import com.myrpg.game.screen.ScreenType;
 
 import java.util.ArrayList;
@@ -21,11 +20,12 @@ import java.util.ArrayList;
 import static com.myrpg.game.audio.AudioObserver.AudioTypeEvent.MENU_THEME;
 
 
-public class MenuLoadGameScreen extends AbstractScreen {
+public class MenuLoadGameScreen extends MenuScreen {
 
     // UI elements for the load game menu
     private Table loadTable, topTable, bottomTable;
     private Stage loadStage = new Stage();
+    private ScreenType currentScreen = getScreenClass();
     private ScreenType previousScreen;
     private List<String> listItems; // List to display saved profiles
     private float stateTime; // Time state for rendering
@@ -147,9 +147,7 @@ public class MenuLoadGameScreen extends AbstractScreen {
     @Override
     public void render(float delta) {
         stateTime += Gdx.graphics.getDeltaTime();
-        if (previousScreen != null) {
-            context.setScreen(previousScreen);
-        }
+
         show();
         loadStage.act(delta);
         loadStage.draw();

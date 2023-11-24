@@ -14,11 +14,10 @@ import com.myrpg.game.audio.AudioManager;
 import com.myrpg.game.audio.AudioObserver;
 import com.myrpg.game.manager.ResourceManager;
 import com.myrpg.game.rpg_game;
-import com.myrpg.game.screen.AbstractScreen;
 import com.myrpg.game.screen.ScreenType;
 
 
-public class MusicScreen extends AbstractScreen {
+public class MusicScreen extends MenuScreen{
     private Table musicTable;
     private Stage musicStage = new Stage();
     private ScreenType previousScreen;
@@ -26,15 +25,19 @@ public class MusicScreen extends AbstractScreen {
     private VfxManager vfxManager;
     private GaussianBlurEffect vfxEffect;
     public MusicScreen(rpg_game context, ScreenType previousScreen, ResourceManager resourceManager) {
+
         super(context, resourceManager);
         this.previousScreen = previousScreen;
+
         resourceManager.setMusicScreen(true);
         loadContents();
+
     }
     private void loadContents() {
         vfxManager = new VfxManager(Pixmap.Format.RGBA8888);
         vfxEffect = new GaussianBlurEffect();
         musicTable = createTable();
+
         handleMusicSettings();
         handleMusicBackButton();
     }
@@ -113,17 +116,16 @@ public class MusicScreen extends AbstractScreen {
 
     @Override
     public void render(float delta) {
-        // Mise à jour du temps écoulé
         stateTime += Gdx.graphics.getDeltaTime();
 
-        // Nettoyage des buffers du gestionnaire VFX
         vfxManager.cleanUpBuffers();
+
 
         // Début de la capture d'entrée pour les effets VFX
         vfxManager.beginInputCapture();
 
         // Rendu de l'écran précédent
-        context.setScreen(previousScreen);
+        //context.setScreen(previousScreen);
 
         // Mise à jour et rendu de l'étape de musique
         musicStage.act(delta);
@@ -135,6 +137,7 @@ public class MusicScreen extends AbstractScreen {
         // Application des effets VFX et rendu à l'écran
         vfxManager.applyEffects();
         vfxManager.renderToScreen();
+
     }
 
     @Override
@@ -159,5 +162,10 @@ public class MusicScreen extends AbstractScreen {
     @Override
     public void hide() {
         resourceManager.setMusicScreen(false);
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        //Nothing
     }
 }

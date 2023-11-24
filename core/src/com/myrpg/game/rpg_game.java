@@ -30,6 +30,7 @@ import com.myrpg.game.screen.ScreenType;
 import com.myrpg.game.screen.menu.MenuLoadGameScreen;
 import com.myrpg.game.screen.menu.MenuNewGameScreen;
 import com.myrpg.game.screen.menu.MenuScreen;
+import com.myrpg.game.screen.menu.MusicScreen;
 
 import java.util.EnumMap;
 
@@ -142,16 +143,20 @@ public class rpg_game extends Game {
 					setScreen(screenType.MENU);
 					break;
 				case MENU_NEW_GAME:
-					screenCache.put(screenType, new MenuNewGameScreen(this, screenType.MENU_NEW_GAME, resourceManager));
+					screenCache.put(screenType, new MenuNewGameScreen(this, screenType.MENU, resourceManager));
 					setScreen(screenType.MENU_NEW_GAME);
 					break;
 				case MENU_LOAD_GAME:
-					screenCache.put(screenType, new MenuLoadGameScreen(this, screenType.MENU_LOAD_GAME, resourceManager));
+					screenCache.put(screenType, new MenuLoadGameScreen(this, screenType.MENU, resourceManager));
 					setScreen(screenType.MENU_LOAD_GAME);
 					break;
 				case LOADING:
 					screenCache.put(screenType, new LoadingScreen(this));
 					setScreen(screenType.LOADING);
+					break;
+				case MUSIC:
+					screenCache.put(screenType, new MusicScreen(this, screenType.MENU, resourceManager));
+					setScreen(screenType.MUSIC);
 					break;
 				default:
 					throw new GdxRuntimeException("Screen " + screenType + " is not recognized");

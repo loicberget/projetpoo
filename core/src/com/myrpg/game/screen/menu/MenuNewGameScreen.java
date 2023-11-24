@@ -9,7 +9,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.myrpg.game.manager.ResourceManager;
 import com.myrpg.game.profile.ProfileManager;
 import com.myrpg.game.rpg_game;
-import com.myrpg.game.screen.AbstractScreen;
 import com.myrpg.game.screen.ScreenType;
 import com.myrpg.game.screen.transition.effects.FadeOutTransitionEffect;
 import com.myrpg.game.screen.transition.effects.TransitionEffect;
@@ -18,7 +17,7 @@ import java.util.ArrayList;
 
 import static com.myrpg.game.audio.AudioObserver.AudioTypeEvent.MENU_THEME;
 
-public class MenuNewGameScreen extends AbstractScreen {
+public class MenuNewGameScreen extends MenuScreen{
 
     private Table newTable;
     private Table topTable;
@@ -165,11 +164,7 @@ public class MenuNewGameScreen extends AbstractScreen {
         //ScreenUtils.clear(0, 0, 0, 1);
         stateTime += Gdx.graphics.getDeltaTime();
 
-//        if (previousScreen != null) {
-//            context.setScreen(previousScreen);
-//            //previousScreen.render(stateTime);
-//        }
-        show();
+        //show();
         newStage.act(delta);
         newStage.draw();
     }
@@ -191,7 +186,7 @@ public class MenuNewGameScreen extends AbstractScreen {
     }
     @Override
     public void hide() {
-        resourceManager.setMenuNewGameScreen(false);
+        resourceManager.setMenuNewGameScreen(true);
     }
 
     @Override

@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.myrpg.game.manager.ResourceManager;
 import com.myrpg.game.map.CollisionArea;
 import com.myrpg.game.map.Map;
 import com.myrpg.game.rpg_game;
@@ -20,6 +21,7 @@ import static com.myrpg.game.rpg_game.*;
 
 public class GameScreen extends AbstractScreen {
     public static final String TAG = GameScreen.class.getSimpleName();
+    private static final ResourceManager resourceManager = null;
     private final BodyDef bodyDef;
     private final FixtureDef fixtureDef;
     private final Body player;
@@ -32,7 +34,7 @@ public class GameScreen extends AbstractScreen {
 
     // constructor
     public GameScreen(final rpg_game context) {
-        super(context);
+        super(context, resourceManager);
 
         //viewport = context.getScreenViewport();
 

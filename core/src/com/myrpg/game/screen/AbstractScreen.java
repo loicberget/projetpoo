@@ -36,22 +36,19 @@ public abstract class AbstractScreen implements Screen, AudioSubject {
     protected Stage stage;
     protected Table screenUI;
     protected   AudioObserver.AudioTypeEvent musicTheme;
-    public AbstractScreen(final rpg_game context) {
+
+    public AbstractScreen(final rpg_game context, ResourceManager resourceManager) {
         this.context = context;
+        this.resourceManager = resourceManager;
+        observers = new Array<>();
+        AudioSubject.addObserver(AudioManager.getInstance());
+
         viewport = context.getScreenViewport();
         this.world = context.getWorld();
         this.box2DDebugRenderer = context.getBox2DDebugRenderer();
 
         stage = context.getStage();
         screenUI = getScreenUI(context.getSkin());
-    }
-
-    public AbstractScreen(final rpg_game context, ResourceManager resourceManager) {
-        this.context = context;
-        this.resourceManager = resourceManager;
-        viewport = context.getScreenViewport(); // Added this line
-        observers = new Array<>();
-        AudioSubject.addObserver(AudioManager.getInstance());
     }
 
     public Table createTable() {
@@ -88,6 +85,7 @@ public abstract class AbstractScreen implements Screen, AudioSubject {
 
     protected abstract Table getScreenUI(final Skin skin);
     // Get the current screen
+    //public ScreenType getScreenClass() {return ScreenType.getScreenTypeByClass(this.getClass());    }
     public ScreenType getScreenClass() {return ScreenType.getScreenTypeByClass(this.getClass());    }
 
     @Override
@@ -95,12 +93,10 @@ public abstract class AbstractScreen implements Screen, AudioSubject {
           viewport.update(width, height);
           stage.getViewport().update(width, height, true);
     }
-
     @Override
     public void show() {
         stage.addActor(screenUI);
     }
-
     @Override
     public void hide() {
         stage.getRoot().removeActor(screenUI);
@@ -109,17 +105,10 @@ public abstract class AbstractScreen implements Screen, AudioSubject {
     public void dispose() {
         stage.getRoot().removeActor(screenUI);
     }
-
     @Override
-    public void removeObserver(AudioObserver audioObserver) {
-
-    }
-
+    public void removeObserver(AudioObserver audioObserver) {    }
     @Override
-    public void removeAllObservers() {
-
-    }
-
+    public void removeAllObservers() {    }
     @Override
     public void notify(AudioObserver.AudioCommand command, AudioObserver.AudioTypeEvent event) {
         for (AudioObserver observer : observers) {

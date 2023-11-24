@@ -20,7 +20,7 @@ import static com.myrpg.game.audio.AudioObserver.AudioTypeEvent.MENU_THEME;
 
 public class MenuScreen extends AbstractScreen {
     private Table menuTable;
-    private Stage menuStage = new Stage();
+    protected Stage menuStage = new Stage();
     private Texture backgroundTexture; // New background texture
     private final ScreenType currentScreen = getScreenClass();
     private float stateTime;
@@ -28,6 +28,7 @@ public class MenuScreen extends AbstractScreen {
     public MenuScreen(final rpg_game context, ResourceManager resourceManager) {
         super(context, resourceManager);
         super.musicTheme = MENU_THEME;
+
 
         menuTable = createTable();
         backgroundTexture = new Texture("background/natureBackground_frames_sheet.png");
@@ -103,12 +104,12 @@ public class MenuScreen extends AbstractScreen {
         context.getSpriteBatch().begin();
         context.getSpriteBatch().draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()); // Draw the background image
         context.getSpriteBatch().end();
-        if (!resourceManager.isMusicScreen() && !resourceManager.isMenuNewGameScreen() && !resourceManager.isMenuLoadGameScreen()) {
+        //if (!resourceManager.isMusicScreen() && !resourceManager.isMenuNewGameScreen() && !resourceManager.isMenuLoadGameScreen()) {
             menuStage.act(delta);
             menuStage.draw();
-        } else {
-            menuStage.clear();
-        }
+        //} else {
+            //menuStage.clear();
+        //}
     }
 
     @Override
@@ -129,12 +130,8 @@ public class MenuScreen extends AbstractScreen {
     }
 
     @Override
-    public void resize(int width, int height) {
-        //super.resize(width, height);
-    }
+    public void resize(int width, int height) {    }
 
     @Override
-    public void hide() {
-        // Nothing
-    }
+    public void hide() {    }
 }
