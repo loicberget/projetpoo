@@ -91,7 +91,7 @@ public class MenuNewGameScreen extends MenuScreen{
                     ArrayList<TransitionEffect> effects = new ArrayList<>();
                     effects.add(new FadeOutTransitionEffect(1f));
                     //effects.add(new FadeInTransitionEffect(1f)); TODO: Issue with fadein effect
-                    //setScreenWithTransition(getScreenClass(), ScreenType.GAME, effects);
+                    setScreenWithTransition(getScreenClass(), ScreenType.GAME, effects);
                 }
             }
         });
