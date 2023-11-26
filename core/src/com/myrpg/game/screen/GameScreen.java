@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -154,6 +155,18 @@ public class GameScreen extends AbstractScreen {
                 player.getWorldCenter().y,
                 true
         );
+
+        if(
+            player.getLinearVelocity().x == 0 &&
+            player.getLinearVelocity().y == 0 &&
+            player.getPosition() != map.getStartLocation()
+        )
+        {
+            player.setTransform(
+            MathUtils.floor(player.getPosition().x) + 0.5f,
+            MathUtils.floor(player.getPosition().y) + 0.5f,
+            0);
+        }
 
         viewport.apply(true);
         mapRenderer.setView(gameCamera); // TODO :  Comparer avec les valeurs au breakpoint avec le fichier original (a retelecharger sur github)
