@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.ScreenUtils;
 import com.myrpg.game.audio.AudioObserver;
 import com.myrpg.game.manager.ResourceManager;
 import com.myrpg.game.rpg_game;
@@ -90,6 +91,13 @@ public class MenuScreen extends AbstractScreen {
                 Gdx.app.exit();
             }
         });
+    }
+
+    protected void ClearAndRender(){
+        ScreenUtils.clear(0, 0, 0, 1);
+        context.getSpriteBatch().begin();
+        context.getSpriteBatch().draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()); // Draw the background image
+        context.getSpriteBatch().end();
     }
 
     @Override

@@ -32,8 +32,6 @@ public class MenuNewGameScreen extends MenuScreen{
         this.previousScreen = previousScreen;
         super.musicTheme = MENU_THEME;
 
-        //menuTable.clear();
-        //TableToDel.clear();
 
         resourceManager.setMenuNewGameScreen(true);
 
@@ -163,8 +161,9 @@ public class MenuNewGameScreen extends MenuScreen{
 
     @Override
     public void render(float delta) {
-        //ScreenUtils.clear(0, 0, 0, 1);
         stateTime += Gdx.graphics.getDeltaTime();
+
+        ClearAndRender();
 
         //show();
         newStage.act(delta);

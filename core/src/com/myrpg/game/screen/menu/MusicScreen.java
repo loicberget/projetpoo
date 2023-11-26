@@ -2,7 +2,6 @@ package com.myrpg.game.screen.menu;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -25,7 +24,6 @@ public class MusicScreen extends MenuScreen{
     private float stateTime;
     private VfxManager vfxManager;
     private GaussianBlurEffect vfxEffect;
-    private Texture backgroundTexture; // New background texture
     public MusicScreen(rpg_game context, ScreenType previousScreen, ResourceManager resourceManager) {
 
         super(context, resourceManager);
@@ -42,7 +40,6 @@ public class MusicScreen extends MenuScreen{
 
         handleMusicSettings();
         handleMusicBackButton();
-        backgroundTexture = new Texture("background/natureBackground_frames_sheet.png");
     }
     private void handleMusicSettings() {
         Label musicLabel = new Label("MUSIC", resourceManager.skin);
@@ -131,9 +128,7 @@ public class MusicScreen extends MenuScreen{
         //context.setScreen(previousScreen);
 
         // Mise à jour et rendu de l'étape de musique
-        context.getSpriteBatch().begin();
-        context.getSpriteBatch().draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()); // Draw the background image
-        context.getSpriteBatch().end();
+        ClearAndRender();
         musicStage.act(delta);
         musicStage.draw();
 
