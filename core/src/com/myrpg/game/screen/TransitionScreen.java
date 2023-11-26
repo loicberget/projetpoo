@@ -20,7 +20,7 @@ public class TransitionScreen extends AbstractScreen {
     ArrayList<TransitionEffect> transitionEffects;
 
     TransitionScreen(rpg_game context, ScreenType current, ScreenType next, ArrayList<TransitionEffect> transitionEffects) {
-        super((rpg_game) context, null);
+        super(context, null);
         this.current = current;
         this.next = next;
         this.transitionEffects = transitionEffects;

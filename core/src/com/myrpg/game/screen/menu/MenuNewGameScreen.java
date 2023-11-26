@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import static com.myrpg.game.audio.AudioObserver.AudioTypeEvent.MENU_THEME;
 
 public class MenuNewGameScreen extends MenuScreen{
-
     private Table newTable;
     private Table topTable;
     private Table bottomTable;
@@ -32,6 +31,9 @@ public class MenuNewGameScreen extends MenuScreen{
         super(context, resourceManager);
         this.previousScreen = previousScreen;
         super.musicTheme = MENU_THEME;
+
+        //menuTable.clear();
+        //TableToDel.clear();
 
         resourceManager.setMenuNewGameScreen(true);
 

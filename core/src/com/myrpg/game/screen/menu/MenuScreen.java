@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import static com.myrpg.game.audio.AudioObserver.AudioTypeEvent.MENU_THEME;
 
 public class MenuScreen extends AbstractScreen {
-    private Table menuTable;
+    protected Table menuTable;
     protected Stage menuStage = new Stage();
     private Texture backgroundTexture; // New background texture
     private final ScreenType currentScreen = getScreenClass();
@@ -44,13 +44,28 @@ public class MenuScreen extends AbstractScreen {
     }
 
 
-    private void handleExitButton() {
-        createButton("Exit", 0, menuTable.getHeight()/9, menuTable);
-        Actor exitButton = menuTable.getCells().get(3).getActor();
-        exitButton.addListener(new ClickListener() {
+    private void handleNewButton() {
+        createButton("New Game", 0, menuTable.getHeight()/10, menuTable);
+
+        Actor newButton = menuTable.getCells().get(0).getActor();
+        newButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent even, float x, float y) {
-                Gdx.app.exit();
+                setScreenWithTransition(getScreenClass(), ScreenType.MENU_NEW_GAME, new ArrayList<>());
+               //menuTable.clear();
+                // menuTable.remove();
+            }
+        });
+
+    }
+
+    private void handleLoadButton() {
+        createButton("Load Game", 0, menuTable.getHeight()/15, menuTable);
+        Actor loadButton = menuTable.getCells().get(1).getActor();
+        loadButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent even, float x, float y) {
+                setScreenWithTransition(getScreenClass(), ScreenType.MENU_LOAD_GAME, new ArrayList<>());
             }
         });
     }
@@ -66,26 +81,13 @@ public class MenuScreen extends AbstractScreen {
         });
     }
 
-    private void handleNewButton() {
-        createButton("New Game", 0, menuTable.getHeight()/10, menuTable);
-
-        Actor newButton = menuTable.getCells().get(0).getActor();
-        newButton.addListener(new ClickListener() {
+    private void handleExitButton() {
+        createButton("Exit", 0, menuTable.getHeight()/9, menuTable);
+        Actor exitButton = menuTable.getCells().get(3).getActor();
+        exitButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent even, float x, float y) {
-                // menuTable.remove(); // TODO: Does not work
-                setScreenWithTransition(getScreenClass(), ScreenType.MENU_NEW_GAME, new ArrayList<>());
-            }
-        });
-    }
-
-    private void handleLoadButton() {
-        createButton("Load Game", 0, menuTable.getHeight()/15, menuTable);
-        Actor loadButton = menuTable.getCells().get(1).getActor();
-        loadButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent even, float x, float y) {
-                setScreenWithTransition(getScreenClass(), ScreenType.MENU_LOAD_GAME, new ArrayList<>());
+                Gdx.app.exit();
             }
         });
     }
@@ -100,27 +102,18 @@ public class MenuScreen extends AbstractScreen {
 
     @Override
     public void render(float delta) {
-        stateTime += Gdx.graphics.getDeltaTime();
         context.getSpriteBatch().begin();
         context.getSpriteBatch().draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()); // Draw the background image
         context.getSpriteBatch().end();
-        //if (!resourceManager.isMusicScreen() && !resourceManager.isMenuNewGameScreen() && !resourceManager.isMenuLoadGameScreen()) {
-            menuStage.act(delta);
-            menuStage.draw();
-        //} else {
-            //menuStage.clear();
-        //}
+        menuStage.act(delta);
+        menuStage.draw();
     }
 
     @Override
-    public void pause() {
-
-    }
+    public void pause() {    }
 
     @Override
-    public void resume() {
-
-    }
+    public void resume() {    }
 
     @Override
     public void dispose() {

@@ -41,7 +41,6 @@ public class rpg_game extends Game {
 	private SpriteBatch spriteBatch;
 	private ResourceManager resourceManager;
 	private PreferenceManager preferenceManager;
-
 	private World world;
 	private WorldContactListener worldContactListener;
 	private Box2DDebugRenderer box2DDebugRenderer;
@@ -54,7 +53,6 @@ public class rpg_game extends Game {
 	private Stage stage;
 	private Skin skin;
 	private FitViewport screenViewport;
-	private Gdx gdx;
 
 	@Override
 	public void create () {
