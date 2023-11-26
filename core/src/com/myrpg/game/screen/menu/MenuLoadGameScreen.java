@@ -148,7 +148,7 @@ public class MenuLoadGameScreen extends MenuScreen {
     public void render(float delta) {
         stateTime += Gdx.graphics.getDeltaTime();
 
-        ClearAndRender();
+        ClearAndRenderBackground();
 
         show();
         loadStage.act(delta);

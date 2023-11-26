@@ -128,7 +128,7 @@ public class MusicScreen extends MenuScreen{
         //context.setScreen(previousScreen);
 
         // Mise à jour et rendu de l'étape de musique
-        ClearAndRender();
+        ClearAndRenderBackground();
         musicStage.act(delta);
         musicStage.draw();
 

@@ -93,7 +93,7 @@ public class MenuScreen extends AbstractScreen {
         });
     }
 
-    protected void ClearAndRender(){
+    protected void ClearAndRenderBackground(){
         ScreenUtils.clear(0, 0, 0, 1);
         context.getSpriteBatch().begin();
         context.getSpriteBatch().draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()); // Draw the background image
