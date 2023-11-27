@@ -50,6 +50,9 @@ public abstract class AbstractScreen implements Screen, AudioSubject {
         stage = context.getStage();
         screenUI = getScreenUI(context.getSkin());
     }
+    public AudioObserver.AudioTypeEvent getMusicTheme() {
+        return musicTheme;
+    }
 
     public Table createTable() {
         Table table = new Table();

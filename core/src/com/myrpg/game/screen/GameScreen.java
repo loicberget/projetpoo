@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import   com.myrpg.game.audio.AudioObserver;
+
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -32,6 +34,7 @@ public class GameScreen extends AbstractScreen {
     private final GLProfiler profiler;
     private final com.myrpg.game.map.Map map;
 
+    private AudioObserver.AudioTypeEvent currentMusicTheme;
 
     // constructor
     public GameScreen(final rpg_game context) {

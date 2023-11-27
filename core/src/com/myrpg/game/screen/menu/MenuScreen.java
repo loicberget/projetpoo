@@ -29,8 +29,6 @@ public class MenuScreen extends AbstractScreen {
     public MenuScreen(final rpg_game context, ResourceManager resourceManager) {
         super(context, resourceManager);
         super.musicTheme = MENU_THEME;
-
-
         menuTable = createTable();
         backgroundTexture = new Texture("background/natureBackground_frames_sheet.png");
         handleNewButton();
