@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -12,6 +14,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.myrpg.game.entities.Entity;
 import com.myrpg.game.manager.ResourceManager;
 import com.myrpg.game.map.CollisionArea;
 import com.myrpg.game.map.Map;
@@ -25,12 +28,14 @@ public class GameScreen extends AbstractScreen {
     private static final ResourceManager resourceManager = null;
     private final BodyDef bodyDef;
     private final FixtureDef fixtureDef;
-    private final Body player;
+    private Entity player;
     private final OrthogonalTiledMapRenderer mapRenderer;
     private final AssetManager assetManager;
     private final OrthographicCamera gameCamera;
     private final GLProfiler profiler;
-    private final com.myrpg.game.map.Map map;
+    private final Map map;
+    private TextureRegion currentPlayerFrame;
+    private Sprite currentPlayerSprite;
 
 
     // constructor
@@ -58,13 +63,7 @@ public class GameScreen extends AbstractScreen {
 
         spawnCollisionAreas();
 
-        // create a player
-        bodyDef.position.set(map.getStartLocation());
-        Gdx.app.debug(TAG, "Player starting location: " + bodyDef.position);
-        bodyDef.gravityScale = 1;
-        bodyDef.type = BodyDef.BodyType.DynamicBody;
-        player = world.createBody(bodyDef);
-        player.setUserData("PLAYER");
+        spawnPlayer();
 
         fixtureDef.isSensor = false;
         fixtureDef.restitution = 0;
@@ -74,7 +73,7 @@ public class GameScreen extends AbstractScreen {
         final PolygonShape pShape = new PolygonShape();
         pShape.setAsBox(0.4f, 0.4f);
         fixtureDef.shape = pShape;
-        player.createFixture(fixtureDef);
+//        player.createFixture(fixtureDef);
         pShape.dispose();
     }
 
@@ -83,7 +82,7 @@ public class GameScreen extends AbstractScreen {
         return new GameUI(stage, skin);
     }
 
-    private void resetBodyandFixtureDefinition(){
+    private void resetBodyandFixtureDefinition() {
         bodyDef.position.set(0, 0);
         bodyDef.gravityScale = 1;
         bodyDef.type = BodyDef.BodyType.StaticBody;
@@ -97,8 +96,20 @@ public class GameScreen extends AbstractScreen {
         fixtureDef.filter.maskBits = -1;
     }
 
-    private void spawnCollisionAreas(){
-        for(final CollisionArea collisionArea : map.getCollisionAreas()) {
+    private void spawnPlayer() {
+//        bodyDef.position.set(map.getStartLocation());
+//        Gdx.app.debug(TAG, "Player starting location: " + bodyDef.position);
+//        bodyDef.gravityScale = 1;
+//        bodyDef.type = BodyDef.BodyType.DynamicBody;
+//        player = world.createBody(bodyDef);
+//        player.setUserData("PLAYER");
+        player = new Entity();
+        player.init(map.getStartLocation().x, map.getStartLocation().y);
+        currentPlayerSprite = player.getFrameSprite();
+    }
+
+    private void spawnCollisionAreas() {
+        for (final CollisionArea collisionArea : map.getCollisionAreas()) {
             resetBodyandFixtureDefinition();
 
             // create a room
@@ -127,51 +138,49 @@ public class GameScreen extends AbstractScreen {
     public void render(final float delta) {
         ScreenUtils.clear(0, 0, 0, 1);
 
-        final float speedX;
-        final float speedY;
+        player.update(delta);
+        currentPlayerFrame = player.getFrame();
 
-        // Left and right movement
-        if(Gdx.input.isKeyPressed(Input.Keys.LEFT)){
-            speedX = -10;
-        } else if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
-            speedX = 10;
-        } else {
-            speedX = 0;
-        }
+        inputMovement(delta);
 
-        // Up and down movement
-        if(Gdx.input.isKeyPressed(Input.Keys.DOWN)){
-            speedY = -10;
-        } else if(Gdx.input.isKeyPressed(Input.Keys.UP)){
-            speedY = 10;
-        } else {
-            speedY = 0;
-        }
+        player.setNextPositionToCurrent();
 
-        player.applyLinearImpulse(
-                (speedX - player.getLinearVelocity().x) * player.getMass(),
-                (speedY - player.getLinearVelocity().y) * player.getMass(),
-                player.getWorldCenter().x,
-                player.getWorldCenter().y,
-                true
-        );
-
-        if(
-            player.getLinearVelocity().x == 0 &&
-            player.getLinearVelocity().y == 0 &&
-            player.getPosition() != map.getStartLocation()
-        )
-        {
-            player.setTransform(
-            MathUtils.floor(player.getPosition().x) + 0.5f,
-            MathUtils.floor(player.getPosition().y) + 0.5f,
-            0);
-        }
 
         viewport.apply(true);
         mapRenderer.setView(gameCamera); // TODO :  Comparer avec les valeurs au breakpoint avec le fichier original (a retelecharger sur github)
         mapRenderer.render();
+        mapRenderer.getBatch().begin();
+        mapRenderer.getBatch().draw(currentPlayerFrame,
+                currentPlayerSprite.getX() - 0.5f,
+                currentPlayerSprite.getY() - 0.5f,
+                1, 1);
+
+        mapRenderer.getBatch().end();
+
         box2DDebugRenderer.render(world, viewport.getCamera().combined);
+    }
+
+    private void inputMovement(final float delta) {
+
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            player.calculateNextPosition(Entity.Direction.LEFT, delta);
+            player.setState(Entity.State.WALKING);
+            player.setDirection(Entity.Direction.LEFT, delta);
+        } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            player.calculateNextPosition(Entity.Direction.RIGHT, delta);
+            player.setState(Entity.State.WALKING);
+            player.setDirection(Entity.Direction.RIGHT, delta);
+        } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            player.calculateNextPosition(Entity.Direction.DOWN, delta);
+            player.setState(Entity.State.WALKING);
+            player.setDirection(Entity.Direction.DOWN, delta);
+        } else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            player.calculateNextPosition(Entity.Direction.UP, delta);
+            player.setState(Entity.State.WALKING);
+            player.setDirection(Entity.Direction.UP, delta);
+        } else {
+            player.setState(Entity.State.IDLE);
+        }
     }
 
 
@@ -193,6 +202,7 @@ public class GameScreen extends AbstractScreen {
     @Override
     public void dispose() {
         mapRenderer.dispose();
+        player.dispose();
     }
 
     @Override

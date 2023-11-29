@@ -3,6 +3,7 @@ package com.myrpg.game.manager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.MusicLoader;
+import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
@@ -14,6 +15,8 @@ import org.slf4j.LoggerFactory;
 
 public class ResourceManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(ResourceManager.class);
+
+    private static final String TAG = ResourceManager.class.getSimpleName();
     protected boolean isMusicScreen;
     protected boolean isMenuNewGameScreen;
     protected boolean isMenuLoadGameScreen;
@@ -113,5 +116,48 @@ public class ResourceManager {
             this.atlas.dispose();
         }
         backgroundSheet.dispose();
+    }
+
+    public static void loadTextureAsset(String textureFilenamePath){
+        if( textureFilenamePath == null || textureFilenamePath.isEmpty() ){
+            return;
+        }
+
+        if( assetManager.isLoaded(textureFilenamePath) ){
+            return;
+        }
+
+        //load asset
+        if( filePathResolver.resolve(textureFilenamePath).exists() ){
+            assetManager.setLoader(Texture.class, new TextureLoader(filePathResolver));
+            assetManager.load(textureFilenamePath, Texture.class);
+            //Until we add loading screen, just block until we load the map
+            assetManager.finishLoadingAsset(textureFilenamePath);
+        }
+        else{
+            Gdx.app.debug(TAG, "Texture doesn't exist!: " + textureFilenamePath );
+        }
+    }
+
+    public static Texture getTextureAsset(String textureFilenamePath){
+        Texture texture = null;
+
+        // once the asset manager is done loading
+        if( assetManager.isLoaded(textureFilenamePath) ){
+            texture = assetManager.get(textureFilenamePath,Texture.class);
+        } else {
+            Gdx.app.debug(TAG, "Texture is not loaded: " + textureFilenamePath );
+        }
+
+        return texture;
+    }
+
+    public static void unloadAsset(String assetFilenamePath){
+        // once the asset manager is done loading
+        if( assetManager.isLoaded(assetFilenamePath) ){
+            assetManager.unload(assetFilenamePath);
+        } else {
+            Gdx.app.debug(TAG, "Asset is not loaded; Nothing to unload: " + assetFilenamePath );
+        }
     }
 }
