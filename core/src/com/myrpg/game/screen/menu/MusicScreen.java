@@ -47,10 +47,8 @@ public class MusicScreen extends MenuScreen{
         Slider musicSlider = new Slider(0, 1, 0.01f, false, resourceManager.skin);
         musicSlider.setValue(context.getPreferenceManager().getMusicVolume());
         musicSlider.addListener(event -> {
-            float volume = musicSlider.getValue();
-
-            if (AudioManager.getInstance().getCurrentMusic() != null) {
-                context.getPreferenceManager().setMusicVolume(musicSlider.getValue());            }
+            context.getPreferenceManager().setMusicVolume(musicSlider.getValue());
+            AudioManager.getInstance().getCurrentMusic().setVolume(context.getPreferenceManager().getMusicVolume());
             return false;
 
         });
@@ -123,9 +121,9 @@ public class MusicScreen extends MenuScreen{
 
         vfxManager.cleanUpBuffers();
 
-
         // Début de la capture d'entrée pour les effets VFX
         vfxManager.beginInputCapture();
+
 
         // Mise à jour et rendu de l'étape de musique
         ClearAndRenderBackground();
