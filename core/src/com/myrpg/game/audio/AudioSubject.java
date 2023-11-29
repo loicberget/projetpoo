@@ -10,9 +10,9 @@ public interface AudioSubject {
      *
      * @param audioObserver The observer to be added.
      */
-    static void addObserver(AudioObserver audioObserver) {
 
-    }
+    void addObserver(AudioObserver observer);
+
 
     /**
      * Removes an observer from the subject.

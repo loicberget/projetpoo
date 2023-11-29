@@ -31,13 +31,13 @@ public abstract class AbstractScreen implements Screen, AudioSubject {
     protected Box2DDebugRenderer box2DDebugRenderer;
     protected Stage stage;
     protected Table screenUI;
-    protected   AudioObserver.AudioTypeEvent musicTheme;
+    protected  AudioObserver.AudioTypeEvent musicTheme;
 
     public AbstractScreen(final rpg_game context, ResourceManager resourceManager) {
         this.context = context;
         this.resourceManager = resourceManager;
         observers = new Array<>();
-        AudioSubject.addObserver(AudioManager.getInstance());
+        addObserver(AudioManager.getInstance());
 
         viewport = context.getScreenViewport();
         this.world = context.getWorld();
@@ -82,6 +82,11 @@ public abstract class AbstractScreen implements Screen, AudioSubject {
     //public ScreenType getScreenClass() {return ScreenType.getScreenTypeByClass(this.getClass());    }
     public ScreenType getScreenClass() {return ScreenType.getScreenTypeByClass(this.getClass());    }
 
+
+    @Override
+    public void addObserver(AudioObserver observer) {
+        observers.add(observer);
+    }
     @Override
     public void resize(final int width, final int height) {
           viewport.update(width, height);
