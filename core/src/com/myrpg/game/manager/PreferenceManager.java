@@ -7,7 +7,6 @@ import com.badlogic.gdx.Preferences;
  * Manages the user preferences for the game.
  */
 public class PreferenceManager {
-
     private static final String PREF_MUSIC_VOLUME = "music";
     private static final String PREF_MUSIC_ENABLED = "music.enabled";
     private static final String PREF_SOUND_ENABLED = "sound.enabled";
@@ -21,6 +20,7 @@ public class PreferenceManager {
         }
         return instance;
     }
+
 
     protected static Preferences getPrefs() {
         return Gdx.app.getPreferences(PREFS_NAME);
@@ -41,6 +41,10 @@ public class PreferenceManager {
         getPrefs().putBoolean(PREF_MUSIC_ENABLED, musicEnabled);
         getPrefs().flush();
     }
+
+
+
+
 
     public static float getMusicVolume() {
         return getPrefs().getFloat(PREF_MUSIC_VOLUME, 0.5f);

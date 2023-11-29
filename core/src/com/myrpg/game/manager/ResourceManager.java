@@ -107,6 +107,7 @@ public class ResourceManager {
         } else {
             LOGGER.debug("Music is not loaded: {}", musicFilenamePath);
         }
+
         return music;
     }
 

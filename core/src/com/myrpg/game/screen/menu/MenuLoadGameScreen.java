@@ -15,8 +15,6 @@ import com.myrpg.game.profile.ProfileManager;
 import com.myrpg.game.rpg_game;
 import com.myrpg.game.screen.ScreenType;
 
-import java.util.ArrayList;
-
 import static com.myrpg.game.audio.AudioObserver.AudioTypeEvent.MENU_THEME;
 
 
@@ -25,7 +23,6 @@ public class MenuLoadGameScreen extends MenuScreen {
     // UI elements for the load game menu
     private Table loadTable, topTable, bottomTable;
     private Stage loadStage = new Stage();
-    private ScreenType currentScreen = getScreenClass();
     private ScreenType previousScreen;
     private List<String> listItems; // List to display saved profiles
     private float stateTime; // Time state for rendering
@@ -93,8 +90,7 @@ public class MenuLoadGameScreen extends MenuScreen {
         loadButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                setScreenWithTransition(getScreenClass(), ScreenType.GAME, new ArrayList<>());
-                //loadProfileAction();
+                context.setScreen(ScreenType.GAME);
             }
         });
     }
@@ -107,29 +103,10 @@ public class MenuLoadGameScreen extends MenuScreen {
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                setScreenWithTransition(getScreenClass(), previousScreen, new ArrayList<>());
+                context.setScreen(previousScreen);
             }
         });
     }
-    /* TODO : See if that method is really useful
-    // Action to perform when 'Play' button is clicked
-    private void loadProfileAction() {
-        previousScreen.dispose();
-        if (listItems.getSelected() == null) return;
-
-        String fileName = listItems.getSelected();
-        if (fileName != null && !fileName.isEmpty()) {
-            FileHandle file = ProfileManager.getInstance().getProfileFile(fileName);
-            if (file != null) {
-                ProfileManager.getInstance().setCurrentProfile(fileName);
-                ProfileManager.getInstance().loadProfile();
-                gdxGame.setGameScreen(new GameScreen(gdxGame, resourceManager));
-                ArrayList<TransitionEffect> effects = new ArrayList<>();
-                effects.add(new FadeOutTransitionEffect(1f));
-                setScreenWithTransition((BaseScreen) gdxGame.getScreen(), gdxGame.getGameScreen(), effects);
-            }
-        }
-    }*/
 
     @Override
     protected Table getScreenUI(Skin skin) {
@@ -157,8 +134,7 @@ public class MenuLoadGameScreen extends MenuScreen {
 
     @Override
     public void resize(int width, int height) {
-//        super.resize(width, height);
-//        loadStage.getViewport().update(width, height, true);
+
     }
 
     @Override

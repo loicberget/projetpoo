@@ -21,10 +21,6 @@ import com.myrpg.game.audio.AudioObserver;
 import com.myrpg.game.audio.AudioSubject;
 import com.myrpg.game.manager.ResourceManager;
 import com.myrpg.game.rpg_game;
-import com.myrpg.game.screen.transition.effects.TransitionEffect;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public abstract class AbstractScreen implements Screen, AudioSubject {
     protected final rpg_game context;
@@ -35,13 +31,13 @@ public abstract class AbstractScreen implements Screen, AudioSubject {
     protected Box2DDebugRenderer box2DDebugRenderer;
     protected Stage stage;
     protected Table screenUI;
-    protected   AudioObserver.AudioTypeEvent musicTheme;
+    protected  AudioObserver.AudioTypeEvent musicTheme;
 
     public AbstractScreen(final rpg_game context, ResourceManager resourceManager) {
         this.context = context;
         this.resourceManager = resourceManager;
         observers = new Array<>();
-        AudioSubject.addObserver(AudioManager.getInstance());
+        addObserver(AudioManager.getInstance());
 
         viewport = context.getScreenViewport();
         this.world = context.getWorld();
@@ -49,6 +45,9 @@ public abstract class AbstractScreen implements Screen, AudioSubject {
 
         stage = context.getStage();
         screenUI = getScreenUI(context.getSkin());
+    }
+    public AudioObserver.AudioTypeEvent getMusicTheme() {
+        return musicTheme;
     }
 
     public Table createTable() {
@@ -78,16 +77,16 @@ public abstract class AbstractScreen implements Screen, AudioSubject {
         table.add(button).padLeft(posX).padTop(posY).row();
     }
 
-    public void setScreenWithTransition(ScreenType current, ScreenType next, List<TransitionEffect> transitionEffects) {
-        Screen transitionScreen = new TransitionScreen(context, current, next, new ArrayList<>(transitionEffects));
-        context.setScreen(transitionScreen);
-    }
-
     protected abstract Table getScreenUI(final Skin skin);
     // Get the current screen
     //public ScreenType getScreenClass() {return ScreenType.getScreenTypeByClass(this.getClass());    }
     public ScreenType getScreenClass() {return ScreenType.getScreenTypeByClass(this.getClass());    }
 
+
+    @Override
+    public void addObserver(AudioObserver observer) {
+        observers.add(observer);
+    }
     @Override
     public void resize(final int width, final int height) {
           viewport.update(width, height);

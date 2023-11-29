@@ -10,10 +10,6 @@ import com.myrpg.game.manager.ResourceManager;
 import com.myrpg.game.profile.ProfileManager;
 import com.myrpg.game.rpg_game;
 import com.myrpg.game.screen.ScreenType;
-import com.myrpg.game.screen.transition.effects.FadeOutTransitionEffect;
-import com.myrpg.game.screen.transition.effects.TransitionEffect;
-
-import java.util.ArrayList;
 
 import static com.myrpg.game.audio.AudioObserver.AudioTypeEvent.MENU_THEME;
 
@@ -78,20 +74,15 @@ public class MenuNewGameScreen extends MenuScreen{
             @Override
             public void clicked(InputEvent even, float x, float y) {
                 String messageText = profileText.getText();
-                //check to see if the current profile matches one that already exists
+                // check to see if the current profile matches one that already exists
                 boolean exists = ProfileManager.getInstance().doesProfileExist(messageText);
                 if (exists) {
-                    //Pop up dialog for Overwrite
-                    overwriteDialog.show(newStage);
+                    overwriteDialog.show(newStage); // Pop-up dialog for Overwrite
                 } else {
                     ProfileManager.getInstance().writeProfileToStorage(messageText,"",false);
                     ProfileManager.getInstance().setCurrentProfile(messageText);
                     ProfileManager.getInstance().setIsNewProfile(true);
-
-                    ArrayList<TransitionEffect> effects = new ArrayList<>();
-                    effects.add(new FadeOutTransitionEffect(1f));
-                    //effects.add(new FadeInTransitionEffect(1f)); TODO: Issue with fadein effect
-                    setScreenWithTransition(getScreenClass(), ScreenType.GAME, effects);
+                    context.setScreen(ScreenType.GAME);
                 }
             }
         });
@@ -105,7 +96,7 @@ public class MenuNewGameScreen extends MenuScreen{
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent even, float x, float y) {
-                setScreenWithTransition(getScreenClass(), previousScreen, new ArrayList<>());
+                context.setScreen(previousScreen);
             }
         });
     }
@@ -123,11 +114,7 @@ public class MenuNewGameScreen extends MenuScreen{
                 ProfileManager.getInstance().setCurrentProfile(messageText);
                 ProfileManager.getInstance().setIsNewProfile(true);
                 overwriteDialog.hide();
-                ArrayList<TransitionEffect> effects = new ArrayList<>();
-                effects.add(new FadeOutTransitionEffect(1f));
-                //effects.add(new FadeInTransitionEffect(1f)); TODO: Issue with fadein effect
                 context.setScreen(ScreenType.GAME);
-                //setScreenWithTransition(getScreenClass(), ScreenType.GAME, effects);
 
             }
 
