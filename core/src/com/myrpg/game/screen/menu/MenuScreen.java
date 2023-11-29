@@ -15,16 +15,12 @@ import com.myrpg.game.rpg_game;
 import com.myrpg.game.screen.AbstractScreen;
 import com.myrpg.game.screen.ScreenType;
 
-import java.util.ArrayList;
-
 import static com.myrpg.game.audio.AudioObserver.AudioTypeEvent.MENU_THEME;
 
 public class MenuScreen extends AbstractScreen {
     protected Table menuTable;
     protected Stage menuStage = new Stage();
     private Texture backgroundTexture; // New background texture
-    private final ScreenType currentScreen = getScreenClass();
-    private float stateTime;
 
     public MenuScreen(final rpg_game context, ResourceManager resourceManager) {
         super(context, resourceManager);
@@ -50,9 +46,7 @@ public class MenuScreen extends AbstractScreen {
         newButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent even, float x, float y) {
-                setScreenWithTransition(getScreenClass(), ScreenType.MENU_NEW_GAME, new ArrayList<>());
-               //menuTable.clear();
-                // menuTable.remove();
+                context.setScreen(ScreenType.MENU_NEW_GAME);
             }
         });
 
@@ -64,7 +58,7 @@ public class MenuScreen extends AbstractScreen {
         loadButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent even, float x, float y) {
-                setScreenWithTransition(getScreenClass(), ScreenType.MENU_LOAD_GAME, new ArrayList<>());
+                context.setScreen(ScreenType.MENU_LOAD_GAME);
             }
         });
     }
@@ -75,7 +69,7 @@ public class MenuScreen extends AbstractScreen {
         musicButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent even, float x, float y) {
-                setScreenWithTransition(getScreenClass(), ScreenType.MUSIC, new ArrayList<>());
+                context.setScreen(ScreenType.MUSIC);
             }
         });
     }

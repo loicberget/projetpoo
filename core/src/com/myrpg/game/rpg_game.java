@@ -114,9 +114,7 @@ public class rpg_game extends Game {
 	public AssetManager getAssetManager() { return assetManager; }
 	public OrthographicCamera getGameCamera() { return gameCamera;}
 	public FitViewport getScreenViewport () { return screenViewport;}
-	public World getWorld() {
-		return world;
-	}
+	public World getWorld() { return world;	}
 	public Box2DDebugRenderer getBox2DDebugRenderer() {
 		return box2DDebugRenderer;
 	}

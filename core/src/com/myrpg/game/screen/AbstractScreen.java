@@ -21,10 +21,6 @@ import com.myrpg.game.audio.AudioObserver;
 import com.myrpg.game.audio.AudioSubject;
 import com.myrpg.game.manager.ResourceManager;
 import com.myrpg.game.rpg_game;
-import com.myrpg.game.screen.transition.effects.TransitionEffect;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public abstract class AbstractScreen implements Screen, AudioSubject {
     protected final rpg_game context;
@@ -79,11 +75,6 @@ public abstract class AbstractScreen implements Screen, AudioSubject {
         button.getLabel().setColor(new Color(0.31f, 0.31f, 0.46f, 1));
 
         table.add(button).padLeft(posX).padTop(posY).row();
-    }
-
-    public void setScreenWithTransition(ScreenType current, ScreenType next, List<TransitionEffect> transitionEffects) {
-        Screen transitionScreen = new TransitionScreen(context, current, next, new ArrayList<>(transitionEffects));
-        context.setScreen(transitionScreen);
     }
 
     protected abstract Table getScreenUI(final Skin skin);

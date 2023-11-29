@@ -127,9 +127,6 @@ public class MusicScreen extends MenuScreen{
         // Début de la capture d'entrée pour les effets VFX
         vfxManager.beginInputCapture();
 
-        // Rendu de l'écran précédent
-        //context.setScreen(previousScreen);
-
         // Mise à jour et rendu de l'étape de musique
         ClearAndRenderBackground();
         musicStage.act(delta);
@@ -141,8 +138,6 @@ public class MusicScreen extends MenuScreen{
         // Application des effets VFX et rendu à l'écran
         vfxManager.applyEffects();
         vfxManager.renderToScreen();
-
-
     }
 
     @Override
