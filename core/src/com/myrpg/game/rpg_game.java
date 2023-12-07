@@ -132,27 +132,27 @@ public class rpg_game extends Game {
 			switch (screenType){
 				case GAME:
 					screenCache.put(screenType, new GameScreen(this));
-					setScreen(screenType.GAME);
+					setScreen(ScreenType.GAME);
 					break;
 				case MENU:
 					screenCache.put(screenType, new MenuScreen(this, resourceManager));
-					setScreen(screenType.MENU);
+					setScreen(ScreenType.MENU);
 					break;
 				case MENU_NEW_GAME:
-					screenCache.put(screenType, new MenuNewGameScreen(this, screenType.MENU, resourceManager));
-					setScreen(screenType.MENU_NEW_GAME);
+					screenCache.put(screenType, new MenuNewGameScreen(this, ScreenType.MENU, resourceManager));
+					setScreen(ScreenType.MENU_NEW_GAME);
 					break;
 				case MENU_LOAD_GAME:
-					screenCache.put(screenType, new MenuLoadGameScreen(this, screenType.MENU, resourceManager));
-					setScreen(screenType.MENU_LOAD_GAME);
+					screenCache.put(screenType, new MenuLoadGameScreen(this, ScreenType.MENU, resourceManager));
+					setScreen(ScreenType.MENU_LOAD_GAME);
 					break;
 				case LOADING:
 					screenCache.put(screenType, new LoadingScreen(this));
-					setScreen(screenType.LOADING);
+					setScreen(ScreenType.LOADING);
 					break;
 				case MUSIC:
-					screenCache.put(screenType, new MusicScreen(this, screenType.MENU, resourceManager));
-					setScreen(screenType.MUSIC);
+					screenCache.put(screenType, new MusicScreen(this, ScreenType.MENU, resourceManager));
+					setScreen(ScreenType.MUSIC);
 					break;
 				default:
 					throw new GdxRuntimeException("Screen " + screenType + " is not recognized");
