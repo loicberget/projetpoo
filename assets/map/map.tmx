@@ -1,43 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-up" width="64" height="64" tilewidth="32" tileheight="32" infinite="0" nextlayerid="8" nextobjectid="28">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-up" width="24" height="9" tilewidth="32" tileheight="32" infinite="0" nextlayerid="14" nextobjectid="44">
  <tileset firstgid="1" source="tileset.tsx"/>
- <layer id="1" name="ground" width="64" height="64">
+ <tileset firstgid="211" name="floors" tilewidth="32" tileheight="32" tilecount="2048" columns="32">
+  <image source="../sprites/terrain/floors.png" width="1024" height="2048"/>
+ </tileset>
+ <tileset firstgid="2259" name="blacksmith" tilewidth="32" tileheight="32" tilecount="1024" columns="32">
+  <image source="../sprites/terrain/blacksmith-smelter.png" width="1024" height="1024"/>
+ </tileset>
+ <tileset firstgid="3283" name="walls" tilewidth="32" tileheight="32" tilecount="6144" columns="64">
+  <image source="../sprites/terrain/walls.png" trans="080a0a" width="2048" height="3072"/>
+ </tileset>
+ <tileset firstgid="9427" name="obj_misk_atlas" tilewidth="32" tileheight="32" tilecount="1024" columns="32">
+  <image source="../sprites/terrain/obj_misk_atlas.png" trans="080a0a" width="1024" height="1024"/>
+ </tileset>
+ <tileset firstgid="10451" name="build_atlas" tilewidth="32" tileheight="32" tilecount="1024" columns="32">
+  <image source="../sprites/terrain/build_atlas.png" trans="080a0a" width="1024" height="1024"/>
+ </tileset>
+ <tileset firstgid="11475" name="DungeonCrawl_ProjectUtumnoTileset" tilewidth="32" tileheight="32" tilecount="3072" columns="64">
+  <image source="../sprites/terrain/DungeonCrawl_ProjectUtumnoTileset.png" trans="080a0a" width="2048" height="1536"/>
+ </tileset>
+ <layer id="9" name="ground" width="24" height="9">
   <data encoding="base64" compression="zlib">
-   eJztw0ENAAAMA6FTU/8SJ2MfSFg1VVVVVVVVVVVVVVVVVVVV9fUBdIdgHw==
+   eJy1UUEKACAI89b/f+XZF0UHQcamXRRGRHOzabZfccy8IAqcnIzjgvtK8aPxU2/Yl/qI3/nVHEH0lR72dPmgP+p32f944L3bL8tk+quan2U3YdpJ6m/WBX9ohb4=
   </data>
  </layer>
- <layer id="2" name="background_1" width="64" height="64">
+ <layer id="10" name="walls1" width="24" height="9">
   <data encoding="base64" compression="zlib">
-   eJzt1UsKgCAABFCv07p/3f9etQlEWiQoKL0Hs3PCCaIQAAAAAAAAAAAAAAAAAKA9Z6X0osZde92/3JmizB/6cec53+v+484YZfjQTzs5764FpffndFtQav+aZCt7zWri/XvI37C/nOv1+2/5mbX8/f9/AYsfF1Y=
+   eJwT5Gdg2C/EwHCABvggEAsCzaclGDV/1HxKQCAfA8MFGmIAGCAoMA==
   </data>
  </layer>
- <layer id="3" name="background_2" width="64" height="64">
+ <layer id="11" name="ground1" width="24" height="9">
   <data encoding="base64" compression="zlib">
-   eJzt0cEJwCAMQFH3akWn6M391zDeeq4iBd+DfwwkJCUAAAAAAAAAAAAAAAAAAP6svfriia5162w37q4T8zm6o7Jkm/1O/z+cpAOrAgSm
+   eJxjYGBgKOViYCgDYhBwhNIgsEyDAQUkqWLKvdNkYHgPxClauPVNBZo5DWpuIpL5x9DULVLFlOMDmssPxC1auPUt5GIYBQMIPgHj3wgYP57aDAxe2tQ3XwhodhAQZwLNzqKB+bQEAMNKEj8=
   </data>
  </layer>
- <layer id="4" name="foreground_1" width="64" height="64">
+ <layer id="12" name="ground2" width="24" height="9">
   <data encoding="base64" compression="zlib">
-   eJztwTEBAAAAwqD1T20MH6AAAAAAAAAAAAAAAAAAAACAtwFAAAAB
+   eJxjYECASjUGgsCBCDXooJGLBLVkmF9DgvmjgPpgk9ZAu2DwAgAfvwOa
   </data>
  </layer>
  <objectgroup color="#ff0000" id="7" name="collision">
-  <object id="13" x="192" y="1888">
-   <polygon points="0,0 32,0 32,-32 -64,-32 -64,64 32,64 32,32 0,32"/>
+  <object id="35" x="64" y="32">
+   <polygon points="0,0 0,64 -32,64 0,64"/>
   </object>
-  <object id="14" x="192" y="1888">
-   <polygon points="0,0 0,32 32,32 32,64 -64,64 -64,-32 32,-32 32,0 0,0"/>
+  <object id="36" x="32" y="192">
+   <polygon points="0,0 128,0 0,0"/>
   </object>
-  <object id="15" x="640" y="1856">
-   <polygon points="0,0 0,32 64,32 64,-96 -640,-96 -640,192 64,192 64,64 0,64 0,96 32,96 32,160 -608,160 -608,-64 32,-64 32,0"/>
+  <object id="37" x="160" y="192">
+   <polygon points="0,0 0,64 0,0"/>
   </object>
-  <object id="16" x="640" y="1888">
-   <polygon points="0,0 0,-32 32,-32 32,-96 -608,-96 -608,128 32,128 32,64 0,64 0,32 64,32 64,160 -640,160 -640,-128 64,-128 64,0"/>
+  <object id="41" x="64" y="32">
+   <polygon points="0,0 704,0 704,224 96,224 704,224 704,0"/>
+  </object>
+  <object id="42" x="32" y="96">
+   <polygon points="0,0 0,96 0,0"/>
+  </object>
+  <object id="43" x="512" y="32">
+   <polygon points="0,0 0,32 96,32 96,0 96,32 0,32"/>
   </object>
  </objectgroup>
  <objectgroup id="5" name="gameObjects"/>
  <objectgroup id="6" name="playerStartLocation" offsetx="0" offsety="0.333333">
-  <object id="22" name="startPoint" x="208" y="1904">
+  <object id="22" name="startPoint" x="208" y="144">
    <point/>
   </object>
  </objectgroup>
