@@ -62,10 +62,6 @@ public class GameScreen extends AbstractScreen {
         final TiledMap tiledMap = assetManager.get("map/map.tmx", TiledMap.class);
         mapRenderer.setMap(tiledMap);
         map = new Map(tiledMap);
-
-        spawnCollisionAreas();
-
-        spawnPlayer();
     }
 
     @Override
@@ -134,7 +130,9 @@ public class GameScreen extends AbstractScreen {
 
     @Override
     public void show() {
+        spawnCollisionAreas();
 
+        spawnPlayer();
     }
 
     @Override
