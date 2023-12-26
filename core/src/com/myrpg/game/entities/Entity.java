@@ -35,7 +35,6 @@ public class Entity {
     public Entity.Direction lastDirection = null;
     public Body body;
     private float baseVelocity = 2f;
-    public Vector2 startMovingPosition;
     public State getState() {
         return _state;
     }

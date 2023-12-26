@@ -39,6 +39,8 @@ public class GameScreen extends AbstractScreen {
     private TextureRegion currentPlayerFrame;
     private Sprite currentPlayerSprite;
 
+    private Vector2 startMovingPosition;
+
     // constructor
     public GameScreen(final rpg_game context) {
         super(context, resourceManager);
@@ -65,17 +67,6 @@ public class GameScreen extends AbstractScreen {
         spawnCollisionAreas();
 
         spawnPlayer();
-
-        fixtureDef.isSensor = false;
-        fixtureDef.restitution = 0;
-        fixtureDef.friction = 0.2f;
-        fixtureDef.filter.categoryBits = BIT_PLAYER;
-        fixtureDef.filter.maskBits = BIT_GROUND;
-        final PolygonShape pShape = new PolygonShape();
-        pShape.setAsBox(0.5f, 0.5f);
-        fixtureDef.shape = pShape;
-        player.body.createFixture(fixtureDef);
-        pShape.dispose();
     }
 
     @Override
@@ -104,10 +95,21 @@ public class GameScreen extends AbstractScreen {
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         player = new Entity();
         player.init(map.getStartLocation().x, map.getStartLocation().y);
-        player.body = world.createBody(bodyDef);
-        player.body.setUserData("PLAYER");
         currentPlayerSprite = player.getFrameSprite();
-        player.startMovingPosition = new Vector2(player.body.getPosition());
+
+        player.body = world.createBody(bodyDef);
+        startMovingPosition = new Vector2(player.body.getPosition());
+        player.body.setUserData("PLAYER");
+        fixtureDef.isSensor = false;
+        fixtureDef.restitution = 0;
+        fixtureDef.friction = 0.2f;
+        fixtureDef.filter.categoryBits = BIT_PLAYER;
+        fixtureDef.filter.maskBits = BIT_GROUND;
+        final PolygonShape pShape = new PolygonShape();
+        pShape.setAsBox(0.5f, 0.5f);
+        fixtureDef.shape = pShape;
+        player.body.createFixture(fixtureDef);
+        pShape.dispose();
     }
 
     private void spawnCollisionAreas() {
@@ -161,43 +163,43 @@ public class GameScreen extends AbstractScreen {
     }
 
     private void inputMovement() {
-        float i = player.startMovingPosition.dst(player.body.getPosition());
+        float i = startMovingPosition.dst(player.body.getPosition());
         System.out.println(i);
-        if(player.startMovingPosition.dst(player.body.getPosition()) > 0.021f) {
+        if(startMovingPosition.dst(player.body.getPosition()) > 0.021f) {
             player.setDirectionAnimation(player.lastDirection);
-            if(player.startMovingPosition.dst(player.body.getPosition()) > 0.9f){
+            if(startMovingPosition.dst(player.body.getPosition()) > 0.9f){
                 player.body.setLinearVelocity(0f, 0f);
                 player.body.setTransform(
                         MathUtils.floor(player.body.getPosition().x) + 0.5f,
                         MathUtils.floor(player.body.getPosition().y) + 0.5f,
                         0);
                 player.setState(Entity.State.IDLE);
-                player.startMovingPosition.set(player.body.getPosition());
+                startMovingPosition.set(player.body.getPosition());
             }
         } else {
             player.setState(Entity.State.IDLE);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.getState() == Entity.State.IDLE) {
             player.setState(Entity.State.WALKING);
-            player.startMovingPosition.set(player.body.getPosition());
+            startMovingPosition.set(player.body.getPosition());
             player.setDirectionAnimation(Entity.Direction.LEFT);
             player.body.setLinearVelocity(-player.getBaseVelocity(), 0f);
             player.lastDirection = Entity.Direction.LEFT;
         } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.getState() == Entity.State.IDLE) {
-            player.startMovingPosition.set(player.body.getPosition());
+            startMovingPosition.set(player.body.getPosition());
             player.setState(Entity.State.WALKING);
             player.setDirectionAnimation(Entity.Direction.RIGHT);
             player.body.setLinearVelocity(player.getBaseVelocity(), 0f);
             player.lastDirection = Entity.Direction.RIGHT;
         } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN) && player.getState() == Entity.State.IDLE) {
             player.setState(Entity.State.WALKING);
-            player.startMovingPosition.set(player.body.getPosition());
+            startMovingPosition.set(player.body.getPosition());
             player.setDirectionAnimation(Entity.Direction.DOWN);
             player.body.setLinearVelocity(0f, -player.getBaseVelocity());
             player.lastDirection = Entity.Direction.DOWN;
         } else if (Gdx.input.isKeyPressed(Input.Keys.UP) && player.getState() == Entity.State.IDLE) {
             player.setState(Entity.State.WALKING);
-            player.startMovingPosition.set(player.body.getPosition());
+            startMovingPosition.set(player.body.getPosition());
             player.setDirectionAnimation(Entity.Direction.UP);
             player.body.setLinearVelocity(0f, player.getBaseVelocity());
             player.lastDirection = Entity.Direction.UP;
