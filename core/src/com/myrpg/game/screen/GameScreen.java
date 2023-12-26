@@ -84,17 +84,16 @@ public class GameScreen extends AbstractScreen {
     }
 
     private void spawnPlayer() {
-        bodyDef.position.set(map.getStartLocation());
-//        Gdx.app.debug(TAG, "Player starting location: " + bodyDef.position);
-        bodyDef.gravityScale = 1;
-        bodyDef.type = BodyDef.BodyType.DynamicBody;
         player = new Entity();
         player.init(map.getStartLocation().x, map.getStartLocation().y);
         currentPlayerSprite = player.getFrameSprite();
 
+        bodyDef.position.set(map.getStartLocation());
+        bodyDef.gravityScale = 1;
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
         player.body = world.createBody(bodyDef);
-        startMovingPosition = new Vector2(player.body.getPosition());
         player.body.setUserData("PLAYER");
+
         fixtureDef.isSensor = false;
         fixtureDef.restitution = 0;
         fixtureDef.friction = 0.2f;
@@ -105,13 +104,14 @@ public class GameScreen extends AbstractScreen {
         fixtureDef.shape = pShape;
         player.body.createFixture(fixtureDef);
         pShape.dispose();
+
+        startMovingPosition = new Vector2(player.body.getPosition());
     }
 
     private void spawnCollisionAreas() {
         for (final CollisionArea collisionArea : map.getCollisionAreas()) {
             resetBodyandFixtureDefinition();
 
-            // create a room
             bodyDef.position.set(collisionArea.getX(), collisionArea.getY());
             bodyDef.fixedRotation = true;
             final Body body = world.createBody(bodyDef);
