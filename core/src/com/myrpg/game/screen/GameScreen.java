@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -21,6 +22,7 @@ import com.myrpg.game.map.Map;
 import com.myrpg.game.rpg_game;
 import com.myrpg.game.ui.GameUI;
 
+import static com.badlogic.gdx.math.Vector2.dst;
 import static com.myrpg.game.rpg_game.*;
 
 public class GameScreen extends AbstractScreen {
@@ -36,7 +38,6 @@ public class GameScreen extends AbstractScreen {
     private final Map map;
     private TextureRegion currentPlayerFrame;
     private Sprite currentPlayerSprite;
-
 
     // constructor
     public GameScreen(final rpg_game context) {
@@ -71,9 +72,9 @@ public class GameScreen extends AbstractScreen {
         fixtureDef.filter.categoryBits = BIT_PLAYER;
         fixtureDef.filter.maskBits = BIT_GROUND;
         final PolygonShape pShape = new PolygonShape();
-        pShape.setAsBox(0.4f, 0.4f);
+        pShape.setAsBox(0.5f, 0.5f);
         fixtureDef.shape = pShape;
-//        player.createFixture(fixtureDef);
+        player.body.createFixture(fixtureDef);
         pShape.dispose();
     }
 
@@ -97,15 +98,16 @@ public class GameScreen extends AbstractScreen {
     }
 
     private void spawnPlayer() {
-//        bodyDef.position.set(map.getStartLocation());
+        bodyDef.position.set(map.getStartLocation());
 //        Gdx.app.debug(TAG, "Player starting location: " + bodyDef.position);
-//        bodyDef.gravityScale = 1;
-//        bodyDef.type = BodyDef.BodyType.DynamicBody;
-//        player = world.createBody(bodyDef);
-//        player.setUserData("PLAYER");
+        bodyDef.gravityScale = 1;
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
         player = new Entity();
         player.init(map.getStartLocation().x, map.getStartLocation().y);
+        player.body = world.createBody(bodyDef);
+        player.body.setUserData("PLAYER");
         currentPlayerSprite = player.getFrameSprite();
+        player.startMovingPosition = new Vector2(player.body.getPosition());
     }
 
     private void spawnCollisionAreas() {
@@ -141,10 +143,8 @@ public class GameScreen extends AbstractScreen {
         player.update(delta);
         currentPlayerFrame = player.getFrame();
 
-        inputMovement(delta);
-
-        player.setNextPositionToCurrent();
-
+        inputMovement();
+        player.setCurrentPosition(player.body.getPosition().x, player.body.getPosition().y);
 
         viewport.apply(true);
         mapRenderer.setView(gameCamera); // TODO :  Comparer avec les valeurs au breakpoint avec le fichier original (a retelecharger sur github)
@@ -160,26 +160,48 @@ public class GameScreen extends AbstractScreen {
         box2DDebugRenderer.render(world, viewport.getCamera().combined);
     }
 
-    private void inputMovement(final float delta) {
-
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            player.calculateNextPosition(Entity.Direction.LEFT, delta);
-            player.setState(Entity.State.WALKING);
-            player.setDirection(Entity.Direction.LEFT, delta);
-        } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            player.calculateNextPosition(Entity.Direction.RIGHT, delta);
-            player.setState(Entity.State.WALKING);
-            player.setDirection(Entity.Direction.RIGHT, delta);
-        } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            player.calculateNextPosition(Entity.Direction.DOWN, delta);
-            player.setState(Entity.State.WALKING);
-            player.setDirection(Entity.Direction.DOWN, delta);
-        } else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            player.calculateNextPosition(Entity.Direction.UP, delta);
-            player.setState(Entity.State.WALKING);
-            player.setDirection(Entity.Direction.UP, delta);
+    private void inputMovement() {
+        float baseVelocity = 2f;
+        float i = player.startMovingPosition.dst(player.body.getPosition());
+        System.out.println(i);
+        if(player.startMovingPosition.dst(player.body.getPosition()) > 0.021f) {
+            player.setDirectionAnimation(player.lastDirection);
+            if(player.startMovingPosition.dst(player.body.getPosition()) > 0.9f){
+                player.body.setLinearVelocity(0f, 0f);
+                player.body.setTransform(
+                        MathUtils.floor(player.body.getPosition().x) + 0.5f,
+                        MathUtils.floor(player.body.getPosition().y) + 0.5f,
+                        0);
+                player.setState(Entity.State.IDLE);
+                player.startMovingPosition.set(player.body.getPosition());
+            }
         } else {
             player.setState(Entity.State.IDLE);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.getState() == Entity.State.IDLE) {
+            player.setState(Entity.State.WALKING);
+            player.startMovingPosition.set(player.body.getPosition());
+            player.setDirectionAnimation(Entity.Direction.LEFT);
+            player.body.setLinearVelocity(-baseVelocity, 0f);
+            player.lastDirection = Entity.Direction.LEFT;
+        } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.getState() == Entity.State.IDLE) {
+            player.startMovingPosition.set(player.body.getPosition());
+            player.setState(Entity.State.WALKING);
+            player.setDirectionAnimation(Entity.Direction.RIGHT);
+            player.body.setLinearVelocity(baseVelocity, 0f);
+            player.lastDirection = Entity.Direction.RIGHT;
+        } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN) && player.getState() == Entity.State.IDLE) {
+            player.setState(Entity.State.WALKING);
+            player.startMovingPosition.set(player.body.getPosition());
+            player.setDirectionAnimation(Entity.Direction.DOWN);
+            player.body.setLinearVelocity(0f, -baseVelocity);
+            player.lastDirection = Entity.Direction.DOWN;
+        } else if (Gdx.input.isKeyPressed(Input.Keys.UP) && player.getState() == Entity.State.IDLE) {
+            player.setState(Entity.State.WALKING);
+            player.startMovingPosition.set(player.body.getPosition());
+            player.setDirectionAnimation(Entity.Direction.UP);
+            player.body.setLinearVelocity(0f, baseVelocity);
+            player.lastDirection = Entity.Direction.UP;
         }
     }
 
