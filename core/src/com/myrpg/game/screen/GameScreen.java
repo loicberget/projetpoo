@@ -163,8 +163,6 @@ public class GameScreen extends AbstractScreen {
     }
 
     private void inputMovement() {
-        float i = startMovingPosition.dst(player.body.getPosition());
-        System.out.println(i);
         if(startMovingPosition.dst(player.body.getPosition()) > 0.021f) {
             player.setDirectionAnimation(player.lastDirection);
             if(startMovingPosition.dst(player.body.getPosition()) > 0.9f){
