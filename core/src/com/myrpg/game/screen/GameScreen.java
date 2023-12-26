@@ -22,7 +22,6 @@ import com.myrpg.game.map.Map;
 import com.myrpg.game.rpg_game;
 import com.myrpg.game.ui.GameUI;
 
-import static com.badlogic.gdx.math.Vector2.dst;
 import static com.myrpg.game.rpg_game.*;
 
 public class GameScreen extends AbstractScreen {
