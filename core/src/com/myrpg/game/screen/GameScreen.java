@@ -161,7 +161,6 @@ public class GameScreen extends AbstractScreen {
     }
 
     private void inputMovement() {
-        float baseVelocity = 2f;
         float i = player.startMovingPosition.dst(player.body.getPosition());
         System.out.println(i);
         if(player.startMovingPosition.dst(player.body.getPosition()) > 0.021f) {
@@ -182,25 +181,25 @@ public class GameScreen extends AbstractScreen {
             player.setState(Entity.State.WALKING);
             player.startMovingPosition.set(player.body.getPosition());
             player.setDirectionAnimation(Entity.Direction.LEFT);
-            player.body.setLinearVelocity(-baseVelocity, 0f);
+            player.body.setLinearVelocity(-player.getBaseVelocity(), 0f);
             player.lastDirection = Entity.Direction.LEFT;
         } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.getState() == Entity.State.IDLE) {
             player.startMovingPosition.set(player.body.getPosition());
             player.setState(Entity.State.WALKING);
             player.setDirectionAnimation(Entity.Direction.RIGHT);
-            player.body.setLinearVelocity(baseVelocity, 0f);
+            player.body.setLinearVelocity(player.getBaseVelocity(), 0f);
             player.lastDirection = Entity.Direction.RIGHT;
         } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN) && player.getState() == Entity.State.IDLE) {
             player.setState(Entity.State.WALKING);
             player.startMovingPosition.set(player.body.getPosition());
             player.setDirectionAnimation(Entity.Direction.DOWN);
-            player.body.setLinearVelocity(0f, -baseVelocity);
+            player.body.setLinearVelocity(0f, -player.getBaseVelocity());
             player.lastDirection = Entity.Direction.DOWN;
         } else if (Gdx.input.isKeyPressed(Input.Keys.UP) && player.getState() == Entity.State.IDLE) {
             player.setState(Entity.State.WALKING);
             player.startMovingPosition.set(player.body.getPosition());
             player.setDirectionAnimation(Entity.Direction.UP);
-            player.body.setLinearVelocity(0f, baseVelocity);
+            player.body.setLinearVelocity(0f, player.getBaseVelocity());
             player.lastDirection = Entity.Direction.UP;
         }
     }

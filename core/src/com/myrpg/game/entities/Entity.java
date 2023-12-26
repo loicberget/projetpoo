@@ -34,10 +34,14 @@ public class Entity {
     public final int FRAME_HEIGHT = 16;
     public Entity.Direction lastDirection = null;
     public Body body;
-
+    private float baseVelocity = 2f;
     public Vector2 startMovingPosition;
     public State getState() {
         return _state;
+    }
+
+    public float getBaseVelocity() {
+        return baseVelocity;
     }
 
     public void setState(State state) {
