@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-up" width="24" height="9" tilewidth="32" tileheight="32" infinite="0" nextlayerid="14" nextobjectid="47">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-up" width="24" height="9" tilewidth="32" tileheight="32" infinite="0" nextlayerid="14" nextobjectid="50">
  <tileset firstgid="1" source="tileset.tsx"/>
  <tileset firstgid="211" name="floors" tilewidth="32" tileheight="32" tilecount="2048" columns="32">
   <image source="../sprites/terrain/floors.png" width="1024" height="2048"/>
@@ -52,17 +52,20 @@
   <object id="42" x="32" y="96">
    <polygon points="0,0 0,96 0,0"/>
   </object>
-  <object id="43" x="512" y="32">
-   <polygon points="0,0 0,32 96,32 96,0 96,32 0,32"/>
-  </object>
-  <object id="44" x="64" y="32">
-   <polygon points="0,0 704,0 0,0"/>
-  </object>
   <object id="45" x="768" y="32">
    <polygon points="0,0 0,224 0,0"/>
   </object>
   <object id="46" x="768" y="256">
    <polygon points="0,0 -608,0 0,0"/>
+  </object>
+  <object id="47" x="64" y="32">
+   <polygon points="0,0 704,0 0,0"/>
+  </object>
+  <object id="48" x="512" y="32">
+   <polygon points="0,0 0,32 96,32 96,0"/>
+  </object>
+  <object id="49" x="608" y="64">
+   <polygon points="0,0 0,-32 -96,-32 -96,0"/>
   </object>
  </objectgroup>
  <objectgroup id="5" name="gameObjects"/>
