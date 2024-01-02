@@ -15,7 +15,7 @@ import com.myrpg.game.manager.ResourceManager;
 
 public class Entity {
     private static final String TAG = Entity.class.getSimpleName();
-    private static final String _defaultSpritePath = "sprites/characters/Warrior.png";
+    private static final String _defaultSpritePath = "sprites/characters/warrior-fists.png";
     private String _entityID;
     private Animation<TextureRegion> _walkLeftAnimation;
     private Animation<TextureRegion> _walkRightAnimation;
@@ -30,8 +30,8 @@ public class Entity {
     protected float _frameTime = 0f;
     protected Sprite _frameSprite = null;
     protected TextureRegion _currentFrame = null;
-    public final int FRAME_WIDTH = 16;
-    public final int FRAME_HEIGHT = 16;
+    public final int FRAME_WIDTH = 64;
+    public final int FRAME_HEIGHT = 64;
     public Entity.Direction lastDirection = null;
     public Body body;
     private float baseVelocity = 4f;
@@ -81,8 +81,8 @@ public class Entity {
         TextureRegion[][] textureFrames = TextureRegion.split(texture,
                 FRAME_WIDTH, FRAME_HEIGHT);
         _frameSprite = new Sprite(textureFrames[0][0].getTexture(),
-                0, 0, FRAME_WIDTH, FRAME_HEIGHT);
-        _currentFrame = textureFrames[0][0];
+                0, 0, FRAME_WIDTH*10, FRAME_HEIGHT*10);
+        _currentFrame = textureFrames[7][0];
     }
 
     private void loadAllAnimations() {
@@ -91,39 +91,39 @@ public class Entity {
                 (_defaultSpritePath);
         TextureRegion[][] textureFrames = TextureRegion.split
                 (texture, FRAME_WIDTH, FRAME_HEIGHT);
-        _walkDownFrames = new Array<>(4);
-        _walkLeftFrames = new Array<>(4);
-        _walkRightFrames = new Array<>(4);
-        _walkUpFrames = new Array<>(4);
+        _walkDownFrames = new Array<>(9);
+        _walkLeftFrames = new Array<>(9);
+        _walkRightFrames = new Array<>(9);
+        _walkUpFrames = new Array<>(9);
         for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                TextureRegion region = textureFrames[i][j];
+            for (int j = 0; j < 9; j++) {
+                TextureRegion region = textureFrames[i+8][j];
                 if (region == null) {
                     Gdx.app.debug(TAG, "Got null animation frame " + i + "," + j);
                 }
                 switch (i) {
                     case 0:
-                        _walkDownFrames.insert(j, region);
+                        _walkUpFrames.insert(j, region);
                         break;
                     case 1:
                         _walkLeftFrames.insert(j, region);
                         break;
                     case 2:
-                        _walkRightFrames.insert(j, region);
+                        _walkDownFrames.insert(j, region);
                         break;
                     case 3:
-                        _walkUpFrames.insert(j, region);
+                        _walkRightFrames.insert(j, region);
                         break;
                 }
             }
         }
-        _walkDownAnimation = new Animation<>(0.25f, _walkDownFrames,
+        _walkDownAnimation = new Animation<>(0.1f, _walkDownFrames,
                 Animation.PlayMode.LOOP);
-        _walkLeftAnimation = new Animation<>(0.25f, _walkLeftFrames,
+        _walkLeftAnimation = new Animation<>(0.1f, _walkLeftFrames,
                 Animation.PlayMode.LOOP);
-        _walkRightAnimation = new Animation<>(0.25f, _walkRightFrames,
+        _walkRightAnimation = new Animation<>(0.1f, _walkRightFrames,
                 Animation.PlayMode.LOOP);
-        _walkUpAnimation = new Animation<>(0.25f, _walkUpFrames,
+        _walkUpAnimation = new Animation<>(0.1f, _walkUpFrames,
                 Animation.PlayMode.LOOP);
     }
 

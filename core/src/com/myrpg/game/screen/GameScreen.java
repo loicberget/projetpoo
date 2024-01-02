@@ -150,9 +150,9 @@ public class GameScreen extends AbstractScreen {
         mapRenderer.render();
         mapRenderer.getBatch().begin();
         mapRenderer.getBatch().draw(currentPlayerFrame,
-                currentPlayerSprite.getX() - 0.5f,
+                currentPlayerSprite.getX() - 0.6f,
                 currentPlayerSprite.getY() - 0.5f,
-                1, 1);
+                1.3f, 1.3f);
 
         mapRenderer.getBatch().end();
 
@@ -160,9 +160,10 @@ public class GameScreen extends AbstractScreen {
     }
 
     private void inputMovement() {
-        if(startMovingPosition.dst(player.body.getPosition()) > 0.021f) {
+        if(startMovingPosition.dst(player.body.getPosition()) > 0.022){
+            System.out.println("Distance : " + startMovingPosition.dst(player.body.getPosition()));
             player.setDirectionAnimation(player.lastDirection);
-            if(startMovingPosition.dst(player.body.getPosition()) > 0.9f){
+            if(startMovingPosition.dst(player.body.getPosition()) > 0.95f){
                 player.body.setLinearVelocity(0f, 0f);
                 player.body.setTransform(
                         MathUtils.floor(player.body.getPosition().x) + 0.5f,
