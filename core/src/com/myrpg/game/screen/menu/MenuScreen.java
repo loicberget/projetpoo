@@ -40,7 +40,7 @@ public class MenuScreen extends AbstractScreen {
 
 
     private void handleNewButton() {
-        createButton("New Game", 0, menuTable.getHeight()/10, menuTable);
+        addButton("New Game", 0, menuTable.getHeight()/10, menuTable);
 
         Actor newButton = menuTable.getCells().get(0).getActor();
         newButton.addListener(new ClickListener() {
@@ -53,7 +53,7 @@ public class MenuScreen extends AbstractScreen {
     }
 
     private void handleLoadButton() {
-        createButton("Load Game", 0, menuTable.getHeight()/15, menuTable);
+        addButton("Load Game", 0, menuTable.getHeight()/15, menuTable);
         Actor loadButton = menuTable.getCells().get(1).getActor();
         loadButton.addListener(new ClickListener() {
             @Override
@@ -64,7 +64,7 @@ public class MenuScreen extends AbstractScreen {
     }
 
     private void handleMusicButton() {
-        createButton("Music", 0, menuTable.getHeight()/10, menuTable);
+        addButton("Music", 0, menuTable.getHeight()/10, menuTable);
         Actor musicButton = menuTable.getCells().get(2).getActor();
         musicButton.addListener(new ClickListener() {
             @Override
@@ -75,7 +75,7 @@ public class MenuScreen extends AbstractScreen {
     }
 
     private void handleExitButton() {
-        createButton("Exit", 0, menuTable.getHeight()/9, menuTable);
+        addButton("Exit", 0, menuTable.getHeight()/9, menuTable);
         Actor exitButton = menuTable.getCells().get(3).getActor();
         exitButton.addListener(new ClickListener() {
             @Override

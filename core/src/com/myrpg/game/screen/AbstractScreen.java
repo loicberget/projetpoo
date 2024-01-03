@@ -65,7 +65,7 @@ public abstract class AbstractScreen implements Screen, AudioSubject {
         return new TextureRegionDrawable(new TextureRegion(texture));
     }
 
-    public void createButton(String buttonName, float posX, float posY, Table table) {
+    public void addButton(String buttonName, float posX, float posY, Table table) {
         BitmapFont font = resourceManager.pixel10Bold; // Ensure this font is correctly initialized in ResourceManager
         TextureRegionDrawable imageUp = createDrawableWithColor(70, 30, new Color(1, 0.65f, 0, 1));
         TextureRegionDrawable imageDown = createDrawableWithColor(70, 30, new Color(0.8f, 0.52f, 0.25f, 1));

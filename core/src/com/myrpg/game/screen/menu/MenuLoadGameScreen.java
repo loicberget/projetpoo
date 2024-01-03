@@ -82,7 +82,7 @@ public class MenuLoadGameScreen extends MenuScreen {
 
     // Method to handle the 'Play' button functionality
     private void handleLoadButton() {
-        createButton("Play", 0, loadTable.getHeight() / 9, loadTable);
+        addButton("Play", 0, loadTable.getHeight() / 9, loadTable);
         Actor loadButton = loadTable.getCells().get(0).getActor();
         topTable.padBottom(loadButton.getHeight());
         bottomTable.add(loadButton).padRight(120).padBottom(50);
@@ -97,7 +97,7 @@ public class MenuLoadGameScreen extends MenuScreen {
 
     // Method to handle the 'Back' button functionality
     private void handleLoadBackButton() {
-        createButton("Back", 0, loadTable.getHeight() / 5, loadTable);
+        addButton("Back", 0, loadTable.getHeight() / 5, loadTable);
         Actor backButton = loadTable.getCells().get(1).getActor();
         bottomTable.add(backButton).padBottom(50);
         backButton.addListener(new ClickListener() {
