@@ -32,7 +32,6 @@ public class MenuNewGameScreen extends MenuScreen {
     private static final int FRAME_WIDTH = 64;
     private static final int FRAME_HEIGHT = 64;
     private static final int FRAME_COLS = 9;
-    private static final int DEFAULT_FRAME_X = 10;
     private static final int WALK_DOWN_ROW = 10;
     private TextureRegion currentCharacterFrame;
     private float characterFrametime = 0f;
@@ -64,9 +63,9 @@ public class MenuNewGameScreen extends MenuScreen {
     }
 
     private void loadTexturesAndAnimations() {
-        walkAnimation.set(WARRIOR, createAnimationFromTx(warriorTexturePath, WALK_DOWN_ROW, DEFAULT_FRAME_X, FRAME_WIDTH, FRAME_HEIGHT));
-        walkAnimation.set(MAGE, createAnimationFromTx(mageTexturePath, WALK_DOWN_ROW, DEFAULT_FRAME_X, FRAME_WIDTH, FRAME_HEIGHT));
-        walkAnimation.set(THIEF, createAnimationFromTx(thiefTexturePath, WALK_DOWN_ROW, DEFAULT_FRAME_X, FRAME_WIDTH, FRAME_HEIGHT));
+        walkAnimation.set(WARRIOR, createAnimationFromTx(warriorTexturePath, WALK_DOWN_ROW, FRAME_COLS, FRAME_WIDTH, FRAME_HEIGHT));
+        walkAnimation.set(MAGE, createAnimationFromTx(mageTexturePath, WALK_DOWN_ROW, FRAME_COLS, FRAME_WIDTH, FRAME_HEIGHT));
+        walkAnimation.set(THIEF, createAnimationFromTx(thiefTexturePath, WALK_DOWN_ROW, FRAME_COLS, FRAME_WIDTH, FRAME_HEIGHT));
     }
 
     private void createMainTable() {
@@ -125,10 +124,9 @@ public class MenuNewGameScreen extends MenuScreen {
             @Override
             public void clicked(InputEvent even, float x, float y) {
                 String messageText = profileText.getText();
-                // check to see if the current profile matches one that already exists
                 boolean exists = ProfileManager.getInstance().doesProfileExist(messageText);
                 if (exists) {
-                    overwriteDialog.show(mainStage); // Pop-up dialog for Overwrite
+                    overwriteDialog.show(mainStage);
                 } else {
                     ProfileManager.getInstance().writeProfileToStorage(messageText, "", false);
                     ProfileManager.getInstance().setCurrentProfile(messageText);
