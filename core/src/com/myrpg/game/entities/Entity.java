@@ -51,10 +51,6 @@ public class Entity {
     public static final int DIRECTION_UP = 0, DIRECTION_LEFT = 1, DIRECTION_DOWN = 2, DIRECTION_RIGHT = 3;
 
     public Entity() {
-        initEntity();
-    }
-
-    public void initEntity() {
         this._entityID = UUID.randomUUID().toString();
         this._currentPlayerPosition = new Vector2();
         ResourceManager.loadTextureAsset(_entitySpritePath);
