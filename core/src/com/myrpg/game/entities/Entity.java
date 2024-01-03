@@ -1,6 +1,5 @@
 package com.myrpg.game.entities;
 
-import java.util.Arrays;
 import java.util.UUID;
 
 import com.badlogic.gdx.graphics.Texture;
@@ -10,6 +9,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.Array;
 import com.myrpg.game.manager.ResourceManager;
+
+import static com.myrpg.game.utilities.Utilities.createAnimationFromTxRegion;
 
 public class Entity {
     private static final String TAG = Entity.class.getSimpleName();
@@ -77,22 +78,14 @@ public class Entity {
         _currentFrame = textureFrames[DIRECTION_DOWN][0];
     }
 
-    private Animation<TextureRegion> createWalkingAnimation(TextureRegion[][] textureFrames, int row, int cols){
-        return new Animation<>(0.1f,
-                new Array<>(Arrays.stream(textureFrames[row])
-                        .limit(cols)
-                        .toArray(TextureRegion[]::new)),
-                Animation.PlayMode.LOOP);
-    }
-
     private void loadAllAnimations() {
         Texture texture = ResourceManager.getTextureAsset(_defaultSpritePath);
         TextureRegion[][] textureFrames = TextureRegion.split(texture, FRAME_WIDTH, FRAME_HEIGHT);
         _walkAnimations = new Array<>();
-        _walkAnimations.addAll(createWalkingAnimation(textureFrames, WALK_UP_ROW, WALK_NB_COLS),
-                createWalkingAnimation(textureFrames, WALK_LEFT_ROW, WALK_NB_COLS),
-                createWalkingAnimation(textureFrames, WALK_DOWN_ROW, WALK_NB_COLS),
-                createWalkingAnimation(textureFrames, WALK_RIGHT_ROW, WALK_NB_COLS));
+        _walkAnimations.set(DIRECTION_UP, createAnimationFromTxRegion(textureFrames, WALK_UP_ROW, WALK_NB_COLS));
+        _walkAnimations.set(DIRECTION_RIGHT, createAnimationFromTxRegion(textureFrames, WALK_RIGHT_ROW, WALK_NB_COLS));
+        _walkAnimations.set(DIRECTION_DOWN, createAnimationFromTxRegion(textureFrames, WALK_DOWN_ROW, WALK_NB_COLS));
+        _walkAnimations.set(DIRECTION_LEFT, createAnimationFromTxRegion(textureFrames, WALK_LEFT_ROW, WALK_NB_COLS));
     }
 
     public void dispose() {
