@@ -77,6 +77,18 @@ public abstract class AbstractScreen implements Screen, AudioSubject {
         table.add(button).padLeft(posX).padTop(posY).row();
     }
 
+    public TextButton createButton(String buttonName) {
+        BitmapFont font = resourceManager.pixel10Bold; // Ensure this font is correctly initialized in ResourceManager
+        TextureRegionDrawable imageUp = createDrawableWithColor(70, 30, new Color(1, 0.65f, 0, 1));
+        TextureRegionDrawable imageDown = createDrawableWithColor(70, 30, new Color(0.8f, 0.52f, 0.25f, 1));
+
+        TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle(imageUp, imageDown, null, font);
+        TextButton button = new TextButton(buttonName, buttonStyle);
+        button.getLabel().setColor(new Color(0.31f, 0.31f, 0.46f, 1));
+        return button;
+    }
+
+
     protected abstract Table getScreenUI(final Skin skin);
     // Get the current screen
     //public ScreenType getScreenClass() {return ScreenType.getScreenTypeByClass(this.getClass());    }
