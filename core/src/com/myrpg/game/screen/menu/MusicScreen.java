@@ -92,7 +92,7 @@ public class MusicScreen extends MenuScreen{
     }
 
     private void handleMusicBackButton() {
-        createButton("Back", 0, musicTable.getHeight()/20, musicTable);
+        addButton("Back", 0, musicTable.getHeight()/20, musicTable);
 
         Actor backButton = musicTable.getCells().get(6).getActor();
         backButton.addListener(new ClickListener() {
@@ -126,7 +126,7 @@ public class MusicScreen extends MenuScreen{
 
 
         // Mise à jour et rendu de l'étape de musique
-        ClearAndRenderBackground();
+        clearAndRenderBackground();
         musicStage.act(delta);
         musicStage.draw();
 
