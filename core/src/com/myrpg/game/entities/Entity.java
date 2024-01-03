@@ -10,11 +10,11 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.Array;
 import com.myrpg.game.manager.ResourceManager;
 
-import static com.myrpg.game.utilities.Utilities.createAnimationFromTxRegion;
+import static com.myrpg.game.utilities.Utilities.createAnimationFromTx;
 
 public class Entity {
     private static final String TAG = Entity.class.getSimpleName();
-    private static final String _defaultSpritePath = "sprites/characters/warrior-fists.png";
+    private static final String _entitySpritePath = "sprites/characters/warrior-fists.png";
     private String _entityID;
     private static final int WALK_NB_COLS = 9;
     private static final int WALK_UP_ROW = 8;
@@ -57,7 +57,7 @@ public class Entity {
     public void initEntity() {
         this._entityID = UUID.randomUUID().toString();
         this._currentPlayerPosition = new Vector2();
-        ResourceManager.loadTextureAsset(_defaultSpritePath);
+        ResourceManager.loadTextureAsset(_entitySpritePath);
         loadDefaultSprite();
         loadAllAnimations();
     }
@@ -73,23 +73,21 @@ public class Entity {
     }
 
     private void loadDefaultSprite() {
-        Texture texture = ResourceManager.getTextureAsset(_defaultSpritePath);
+        Texture texture = ResourceManager.getTextureAsset(_entitySpritePath);
         TextureRegion[][] textureFrames = TextureRegion.split(texture, FRAME_WIDTH, FRAME_HEIGHT);
         _currentFrame = textureFrames[DIRECTION_DOWN][0];
     }
 
     private void loadAllAnimations() {
-        Texture texture = ResourceManager.getTextureAsset(_defaultSpritePath);
-        TextureRegion[][] textureFrames = TextureRegion.split(texture, FRAME_WIDTH, FRAME_HEIGHT);
         _walkAnimations = new Array<>();
-        _walkAnimations.set(DIRECTION_UP, createAnimationFromTxRegion(textureFrames, WALK_UP_ROW, WALK_NB_COLS));
-        _walkAnimations.set(DIRECTION_RIGHT, createAnimationFromTxRegion(textureFrames, WALK_RIGHT_ROW, WALK_NB_COLS));
-        _walkAnimations.set(DIRECTION_DOWN, createAnimationFromTxRegion(textureFrames, WALK_DOWN_ROW, WALK_NB_COLS));
-        _walkAnimations.set(DIRECTION_LEFT, createAnimationFromTxRegion(textureFrames, WALK_LEFT_ROW, WALK_NB_COLS));
+        _walkAnimations.set(DIRECTION_UP, createAnimationFromTx(_entitySpritePath, WALK_UP_ROW, WALK_NB_COLS, FRAME_WIDTH, FRAME_HEIGHT));
+        _walkAnimations.set(DIRECTION_RIGHT, createAnimationFromTx(_entitySpritePath, WALK_RIGHT_ROW, WALK_NB_COLS, FRAME_WIDTH, FRAME_HEIGHT));
+        _walkAnimations.set(DIRECTION_DOWN, createAnimationFromTx(_entitySpritePath, WALK_DOWN_ROW, WALK_NB_COLS, FRAME_WIDTH, FRAME_HEIGHT));
+        _walkAnimations.set(DIRECTION_LEFT, createAnimationFromTx(_entitySpritePath, WALK_LEFT_ROW, WALK_NB_COLS, FRAME_WIDTH, FRAME_HEIGHT));
     }
 
     public void dispose() {
-        ResourceManager.unloadAsset(_defaultSpritePath);
+        ResourceManager.unloadAsset(_entitySpritePath);
     }
 
     public TextureRegion getFrame() {

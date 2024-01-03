@@ -18,6 +18,7 @@ import com.myrpg.game.rpg_game;
 import com.myrpg.game.screen.ScreenType;
 
 import static com.myrpg.game.audio.AudioObserver.AudioTypeEvent.MENU_THEME;
+import static com.myrpg.game.utilities.Utilities.createAnimationFromTx;
 
 public class MenuNewGameScreen extends MenuScreen {
     private Table mainTable;
@@ -25,30 +26,25 @@ public class MenuNewGameScreen extends MenuScreen {
     private TextField profileText;
     private Dialog overwriteDialog;
     private ScreenType previousScreen;
-    private Texture warriorTexture;
-    private final String warriorTexturePath = "sprites/characters/warrior-fists.png";
-    private Texture mageTexture;
-    private final String mageTexturePath = "sprites/characters/mage-fists.png";
-    private Texture thiefTexture;
-    private final String thiefTexturePath = "sprites/characters/thief-fists.png";
-    private final int FRAME_WIDTH = 64;
-    private final int FRAME_HEIGHT = 64;
-    private final int FRAME_COLS = 9;
-    private final int DEFAULT_FRAME_X = 10;
+    private final static String warriorTexturePath = "sprites/characters/warrior-fists.png";
+    private final static String mageTexturePath = "sprites/characters/mage-fists.png";
+    private static final String thiefTexturePath = "sprites/characters/thief-fists.png";
+    private static final int FRAME_WIDTH = 64;
+    private static final int FRAME_HEIGHT = 64;
+    private static final int FRAME_COLS = 9;
+    private static final int DEFAULT_FRAME_X = 10;
+    private static final int WALK_DOWN_ROW = 10;
     private TextureRegion currentCharacterFrame;
     private float characterFrametime = 0f;
-    private float stateTime;
     private Image characterImage;
     private final TextureRegionDrawable currentCharacterDrawable;
+    private Array<Animation<TextureRegion>> walkAnimation;
 
-    private enum CharacterClass {
-        WARRIOR, MAGE, THIEF
-    }
+    private static int WARRIOR = 0;
+    private static int MAGE = 1;
+    private static int THIEF = 2;
 
-    private CharacterClass selectedClass = CharacterClass.WARRIOR;
-    private Animation<TextureRegion> mageWalkAnimation;
-    private Animation<TextureRegion> thiefWalkAnimation;
-    private Animation<TextureRegion> warriorWalkAnimation;
+    private static int selectedClass = WARRIOR;
 
     public MenuNewGameScreen(rpg_game context, ScreenType previousScreen, ResourceManager resourceManager) {
         super(context, resourceManager);
@@ -68,31 +64,9 @@ public class MenuNewGameScreen extends MenuScreen {
     }
 
     private void loadTexturesAndAnimations() {
-        ResourceManager.loadTextureAsset(warriorTexturePath);
-        ResourceManager.loadTextureAsset(mageTexturePath);
-        ResourceManager.loadTextureAsset(thiefTexturePath);
-
-        warriorTexture = ResourceManager.getTextureAsset(warriorTexturePath);
-        mageTexture = ResourceManager.getTextureAsset(mageTexturePath);
-        thiefTexture = ResourceManager.getTextureAsset(thiefTexturePath);
-
-        TextureRegion[][] warriorTextureFrames = TextureRegion.split(warriorTexture, FRAME_WIDTH, FRAME_HEIGHT);
-        TextureRegion[][] mageTextureFrames = TextureRegion.split(mageTexture, FRAME_WIDTH, FRAME_HEIGHT);
-        TextureRegion[][] thiefTextureFrames = TextureRegion.split(thiefTexture, FRAME_WIDTH, FRAME_HEIGHT);
-
-        Array<TextureRegion> mageWalkFrames = new Array<>(9);
-        Array<TextureRegion> thiefWalkFrames = new Array<>(9);
-        Array<TextureRegion> warriorWalkFrames = new Array<>(9);
-
-        for (int i = 0; i < FRAME_COLS; i++) {
-            warriorWalkFrames.add(warriorTextureFrames[DEFAULT_FRAME_X][i]);
-            mageWalkFrames.add(mageTextureFrames[DEFAULT_FRAME_X][i]);
-            thiefWalkFrames.add(thiefTextureFrames[DEFAULT_FRAME_X][i]);
-        }
-
-        warriorWalkAnimation = new Animation<>(0.25f, warriorWalkFrames, Animation.PlayMode.LOOP);
-        mageWalkAnimation = new Animation<>(0.25f, mageWalkFrames, Animation.PlayMode.LOOP);
-        thiefWalkAnimation = new Animation<>(0.25f, thiefWalkFrames, Animation.PlayMode.LOOP);
+        walkAnimation.set(WARRIOR, createAnimationFromTx(warriorTexturePath, WALK_DOWN_ROW, DEFAULT_FRAME_X, FRAME_WIDTH, FRAME_HEIGHT));
+        walkAnimation.set(MAGE, createAnimationFromTx(mageTexturePath, WALK_DOWN_ROW, DEFAULT_FRAME_X, FRAME_WIDTH, FRAME_HEIGHT));
+        walkAnimation.set(THIEF, createAnimationFromTx(thiefTexturePath, WALK_DOWN_ROW, DEFAULT_FRAME_X, FRAME_WIDTH, FRAME_HEIGHT));
     }
 
     private void createMainTable() {
@@ -132,13 +106,13 @@ public class MenuNewGameScreen extends MenuScreen {
             public void changed(ChangeEvent event, Actor actor) {
                 switch (classSelectBox.getSelected()) {
                     case "Warrior":
-                        selectedClass = CharacterClass.WARRIOR;
+                        selectedClass = WARRIOR;
                         break;
                     case "Mage":
-                        selectedClass = CharacterClass.MAGE;
+                        selectedClass = MAGE;
                         break;
                     case "Thief":
-                        selectedClass = CharacterClass.THIEF;
+                        selectedClass = THIEF;
                         break;
                 }
             }
@@ -222,10 +196,7 @@ public class MenuNewGameScreen extends MenuScreen {
 
     @Override
     public void render(float delta) {
-        stateTime += Gdx.graphics.getDeltaTime();
-
         clearAndRenderBackground();
-
         mainStage.act(delta);
         setCurrentCharacterDrawable(delta);
         mainStage.draw();
@@ -233,29 +204,9 @@ public class MenuNewGameScreen extends MenuScreen {
 
     private void setCurrentCharacterDrawable(float delta) {
         characterFrametime = (characterFrametime + delta) % FRAME_COLS;
-        switch (selectedClass) {
-            case WARRIOR:
-                currentCharacterFrame = warriorWalkAnimation.getKeyFrame(characterFrametime);
-                break;
-            case MAGE:
-                currentCharacterFrame = mageWalkAnimation.getKeyFrame(characterFrametime);
-                break;
-            case THIEF:
-                currentCharacterFrame = thiefWalkAnimation.getKeyFrame(characterFrametime);
-                break;
-        }
+        currentCharacterFrame = walkAnimation.get(selectedClass).getKeyFrame(characterFrametime);
         currentCharacterDrawable.setRegion(currentCharacterFrame);
         characterImage.setDrawable(currentCharacterDrawable);
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
     }
 
     @Override
@@ -269,7 +220,4 @@ public class MenuNewGameScreen extends MenuScreen {
         resourceManager.setMenuNewGameScreen(true);
     }
 
-    @Override
-    public void resize(int width, int height) {
-    }
 }
