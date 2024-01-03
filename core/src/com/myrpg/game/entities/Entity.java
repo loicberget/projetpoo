@@ -1,13 +1,11 @@
 package com.myrpg.game.entities;
 
+import java.util.Arrays;
 import java.util.UUID;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.Array;
@@ -17,24 +15,22 @@ public class Entity {
     private static final String TAG = Entity.class.getSimpleName();
     private static final String _defaultSpritePath = "sprites/characters/warrior-fists.png";
     private String _entityID;
-    private Animation<TextureRegion> _walkLeftAnimation;
-    private Animation<TextureRegion> _walkRightAnimation;
-    private Animation<TextureRegion> _walkUpAnimation;
-    private Animation<TextureRegion> _walkDownAnimation;
-    private Array<TextureRegion> _walkLeftFrames;
-    private Array<TextureRegion> _walkRightFrames;
-    private Array<TextureRegion> _walkUpFrames;
-    private Array<TextureRegion> _walkDownFrames;
+    private static final int WALK_NB_COLS = 9;
+    private static final int WALK_UP_ROW = 8;
+    private static final int WALK_RIGHT_ROW = 9;
+    private static final int WALK_DOWN_ROW = 10;
+    private static final int WALK_LEFT_ROW = 11;
     protected Vector2 _currentPlayerPosition;
     protected State _state = State.IDLE;
     protected float _frameTime = 0f;
-    protected Sprite _frameSprite = null;
     protected TextureRegion _currentFrame = null;
-    public final int FRAME_WIDTH = 64;
-    public final int FRAME_HEIGHT = 64;
-    public Entity.Direction lastDirection = null;
+    public static final int FRAME_WIDTH = 64;
+    public static final int FRAME_HEIGHT = 64;
+    private int currentDirection = DIRECTION_DOWN;
     public Body body;
-    private float baseVelocity = 4f;
+    private final float baseVelocity = 4f;
+    private Array<Animation<TextureRegion>> _walkAnimations;
+
     public State getState() {
         return _state;
     }
@@ -51,9 +47,7 @@ public class Entity {
         IDLE, WALKING
     }
 
-    public enum Direction {
-        UP, RIGHT, DOWN, LEFT
-    }
+    public static final int DIRECTION_UP = 0, DIRECTION_RIGHT = 1, DIRECTION_DOWN = 2, DIRECTION_LEFT = 3;
 
     public Entity() {
         initEntity();
@@ -68,7 +62,8 @@ public class Entity {
     }
 
     public void update(float delta) {
-        _frameTime = (_frameTime + delta) % 5; //Want to avoid overflow
+        continueAnimation();
+        _frameTime = (_frameTime + delta) % WALK_NB_COLS; //Want to avoid overflow
     }
 
     public void init(float startX, float startY) {
@@ -78,61 +73,30 @@ public class Entity {
 
     private void loadDefaultSprite() {
         Texture texture = ResourceManager.getTextureAsset(_defaultSpritePath);
-        TextureRegion[][] textureFrames = TextureRegion.split(texture,
-                FRAME_WIDTH, FRAME_HEIGHT);
-        _frameSprite = new Sprite(textureFrames[0][0].getTexture(),
-                0, 0, FRAME_WIDTH*10, FRAME_HEIGHT*10);
-        _currentFrame = textureFrames[7][0];
+        TextureRegion[][] textureFrames = TextureRegion.split(texture, FRAME_WIDTH, FRAME_HEIGHT);
+        _currentFrame = textureFrames[DIRECTION_DOWN][0];
+    }
+
+    private Animation<TextureRegion> createWalkingAnimation(TextureRegion[][] textureFrames, int row, int cols){
+        return new Animation<>(0.1f,
+                new Array<>(Arrays.stream(textureFrames[row])
+                        .limit(cols)
+                        .toArray(TextureRegion[]::new)),
+                Animation.PlayMode.LOOP);
     }
 
     private void loadAllAnimations() {
-        //Walking animation
-        Texture texture = ResourceManager.getTextureAsset
-                (_defaultSpritePath);
-        TextureRegion[][] textureFrames = TextureRegion.split
-                (texture, FRAME_WIDTH, FRAME_HEIGHT);
-        _walkDownFrames = new Array<>(9);
-        _walkLeftFrames = new Array<>(9);
-        _walkRightFrames = new Array<>(9);
-        _walkUpFrames = new Array<>(9);
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 9; j++) {
-                TextureRegion region = textureFrames[i+8][j];
-                if (region == null) {
-                    Gdx.app.debug(TAG, "Got null animation frame " + i + "," + j);
-                }
-                switch (i) {
-                    case 0:
-                        _walkUpFrames.insert(j, region);
-                        break;
-                    case 1:
-                        _walkLeftFrames.insert(j, region);
-                        break;
-                    case 2:
-                        _walkDownFrames.insert(j, region);
-                        break;
-                    case 3:
-                        _walkRightFrames.insert(j, region);
-                        break;
-                }
-            }
-        }
-        _walkDownAnimation = new Animation<>(0.1f, _walkDownFrames,
-                Animation.PlayMode.LOOP);
-        _walkLeftAnimation = new Animation<>(0.1f, _walkLeftFrames,
-                Animation.PlayMode.LOOP);
-        _walkRightAnimation = new Animation<>(0.1f, _walkRightFrames,
-                Animation.PlayMode.LOOP);
-        _walkUpAnimation = new Animation<>(0.1f, _walkUpFrames,
-                Animation.PlayMode.LOOP);
+        Texture texture = ResourceManager.getTextureAsset(_defaultSpritePath);
+        TextureRegion[][] textureFrames = TextureRegion.split(texture, FRAME_WIDTH, FRAME_HEIGHT);
+        _walkAnimations = new Array<>();
+        _walkAnimations.addAll(createWalkingAnimation(textureFrames, WALK_UP_ROW, WALK_NB_COLS),
+                createWalkingAnimation(textureFrames, WALK_LEFT_ROW, WALK_NB_COLS),
+                createWalkingAnimation(textureFrames, WALK_DOWN_ROW, WALK_NB_COLS),
+                createWalkingAnimation(textureFrames, WALK_RIGHT_ROW, WALK_NB_COLS));
     }
 
     public void dispose() {
         ResourceManager.unloadAsset(_defaultSpritePath);
-    }
-
-    public Sprite getFrameSprite() {
-        return _frameSprite;
     }
 
     public TextureRegion getFrame() {
@@ -143,31 +107,23 @@ public class Entity {
         return _currentPlayerPosition;
     }
 
-    public void setCurrentPosition(float currentPositionX, float
-            currentPositionY) {
-        _frameSprite.setX(currentPositionX);
-        _frameSprite.setY(currentPositionY);
+    public void setCurrentPosition(
+            float currentPositionX,
+            float currentPositionY) {
         this._currentPlayerPosition.x = currentPositionX;
         this._currentPlayerPosition.y = currentPositionY;
     }
 
-    public void setDirectionAnimation(Direction direction) {
-        //Look into the appropriate variable when changing position
-        switch (direction) {
-            case DOWN:
-                _currentFrame = _walkDownAnimation.getKeyFrame(_frameTime);
-                break;
-            case LEFT:
-                _currentFrame = _walkLeftAnimation.getKeyFrame(_frameTime);
-                break;
-            case UP:
-                _currentFrame = _walkUpAnimation.getKeyFrame(_frameTime);
-                break;
-            case RIGHT:
-                _currentFrame = _walkRightAnimation.getKeyFrame(_frameTime);
-                break;
-            default:
-                break;
-        }
+    public void continueAnimation() {
+        if(_state == State.WALKING)
+            _currentFrame = _walkAnimations.get(currentDirection).getKeyFrame(_frameTime);
+    }
+
+    public int setCurrentDirection() {
+        return currentDirection;
+    }
+
+    public void setDirection(int direction) {
+        this.currentDirection = direction;
     }
 }

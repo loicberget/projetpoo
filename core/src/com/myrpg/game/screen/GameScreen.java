@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -36,7 +35,6 @@ public class GameScreen extends AbstractScreen {
     private final GLProfiler profiler;
     private final Map map;
     private TextureRegion currentPlayerFrame;
-    private Sprite currentPlayerSprite;
 
     private Vector2 startMovingPosition;
 
@@ -86,7 +84,6 @@ public class GameScreen extends AbstractScreen {
     private void spawnPlayer() {
         player = new Entity();
         player.init(map.getStartLocation().x, map.getStartLocation().y);
-        currentPlayerSprite = player.getFrameSprite();
 
         bodyDef.position.set(map.getStartLocation());
         bodyDef.gravityScale = 1;
@@ -149,11 +146,7 @@ public class GameScreen extends AbstractScreen {
         mapRenderer.setView(gameCamera); // TODO :  Comparer avec les valeurs au breakpoint avec le fichier original (a retelecharger sur github)
         mapRenderer.render();
         mapRenderer.getBatch().begin();
-        mapRenderer.getBatch().draw(currentPlayerFrame,
-                currentPlayerSprite.getX() - 0.6f,
-                currentPlayerSprite.getY() - 0.5f,
-                1.3f, 1.3f);
-
+        mapRenderer.getBatch().draw(currentPlayerFrame, player.getCurrentPosition().x, player.getCurrentPosition().y, 1.3f, 1.3f);
         mapRenderer.getBatch().end();
 
         box2DDebugRenderer.render(world, viewport.getCamera().combined);
@@ -161,8 +154,7 @@ public class GameScreen extends AbstractScreen {
 
     private void inputMovement() {
         if(startMovingPosition.dst(player.body.getPosition()) > 0.022){
-            System.out.println("Distance : " + startMovingPosition.dst(player.body.getPosition()));
-            player.setDirectionAnimation(player.lastDirection);
+            player.setDirection(player.setCurrentDirection());
             if(startMovingPosition.dst(player.body.getPosition()) > 0.95f){
                 player.body.setLinearVelocity(0f, 0f);
                 player.body.setTransform(
@@ -178,27 +170,23 @@ public class GameScreen extends AbstractScreen {
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.getState() == Entity.State.IDLE) {
             player.setState(Entity.State.WALKING);
             startMovingPosition.set(player.body.getPosition());
-            player.setDirectionAnimation(Entity.Direction.LEFT);
+            player.setDirection(Entity.DIRECTION_LEFT);
             player.body.setLinearVelocity(-player.getBaseVelocity(), 0f);
-            player.lastDirection = Entity.Direction.LEFT;
         } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.getState() == Entity.State.IDLE) {
             startMovingPosition.set(player.body.getPosition());
             player.setState(Entity.State.WALKING);
-            player.setDirectionAnimation(Entity.Direction.RIGHT);
+            player.setDirection(Entity.DIRECTION_RIGHT);
             player.body.setLinearVelocity(player.getBaseVelocity(), 0f);
-            player.lastDirection = Entity.Direction.RIGHT;
         } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN) && player.getState() == Entity.State.IDLE) {
             player.setState(Entity.State.WALKING);
             startMovingPosition.set(player.body.getPosition());
-            player.setDirectionAnimation(Entity.Direction.DOWN);
+            player.setDirection(Entity.DIRECTION_DOWN);
             player.body.setLinearVelocity(0f, -player.getBaseVelocity());
-            player.lastDirection = Entity.Direction.DOWN;
         } else if (Gdx.input.isKeyPressed(Input.Keys.UP) && player.getState() == Entity.State.IDLE) {
             player.setState(Entity.State.WALKING);
             startMovingPosition.set(player.body.getPosition());
-            player.setDirectionAnimation(Entity.Direction.UP);
+            player.setDirection(Entity.DIRECTION_UP);
             player.body.setLinearVelocity(0f, player.getBaseVelocity());
-            player.lastDirection = Entity.Direction.UP;
         }
     }
 
