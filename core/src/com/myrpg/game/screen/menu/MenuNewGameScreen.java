@@ -1,7 +1,6 @@
 package com.myrpg.game.screen.menu;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -23,7 +22,7 @@ import static com.myrpg.game.utilities.Utilities.createAnimationFromTx;
 public class MenuNewGameScreen extends MenuScreen {
     private Table mainTable;
     private Stage mainStage = new Stage();
-    private TextField profileText;
+    private TextField profileField;
     private Dialog overwriteDialog;
     private ScreenType previousScreen;
     private final static String warriorTexturePath = "sprites/characters/warrior-fists.png";
@@ -63,9 +62,10 @@ public class MenuNewGameScreen extends MenuScreen {
     }
 
     private void loadTexturesAndAnimations() {
-        walkAnimation.set(WARRIOR, createAnimationFromTx(warriorTexturePath, WALK_DOWN_ROW, FRAME_COLS, FRAME_WIDTH, FRAME_HEIGHT));
-        walkAnimation.set(MAGE, createAnimationFromTx(mageTexturePath, WALK_DOWN_ROW, FRAME_COLS, FRAME_WIDTH, FRAME_HEIGHT));
-        walkAnimation.set(THIEF, createAnimationFromTx(thiefTexturePath, WALK_DOWN_ROW, FRAME_COLS, FRAME_WIDTH, FRAME_HEIGHT));
+        walkAnimation = new Array<>();
+        walkAnimation.insert(WARRIOR, createAnimationFromTx(warriorTexturePath, WALK_DOWN_ROW, FRAME_COLS, FRAME_WIDTH, FRAME_HEIGHT));
+        walkAnimation.insert(MAGE, createAnimationFromTx(mageTexturePath, WALK_DOWN_ROW, FRAME_COLS, FRAME_WIDTH, FRAME_HEIGHT));
+        walkAnimation.insert(THIEF, createAnimationFromTx(thiefTexturePath, WALK_DOWN_ROW, FRAME_COLS, FRAME_WIDTH, FRAME_HEIGHT));
     }
 
     private void createMainTable() {
@@ -81,11 +81,12 @@ public class MenuNewGameScreen extends MenuScreen {
     }
 
     private void createProfileTextField() {
-        Label profileName = new Label("Enter Profile Name: ", ResourceManager.skin);
-        profileText = new TextField("default", ResourceManager.skin);
-        profileText.setMaxLength(20);
-        mainTable.add(profileName).center().colspan(2).row();
-        mainTable.add(profileText).center().colspan(2).padBottom(10).row();
+        Label profileLabel = new Label("Enter Profile Name: ", ResourceManager.skin);
+        profileField = new TextField("", ResourceManager.skin);
+        profileField.setMaxLength(20);
+        profileField.setMessageText("Your name");
+        mainTable.add(profileLabel).center().colspan(2).row();
+        mainTable.add(profileField).center().colspan(2).padBottom(10).row();
     }
 
     private void createClassSelectBox() {
@@ -123,7 +124,7 @@ public class MenuNewGameScreen extends MenuScreen {
         playButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent even, float x, float y) {
-                String messageText = profileText.getText();
+                String messageText = profileField.getText();
                 boolean exists = ProfileManager.getInstance().doesProfileExist(messageText);
                 if (exists) {
                     overwriteDialog.show(mainStage);
@@ -161,7 +162,7 @@ public class MenuNewGameScreen extends MenuScreen {
         overwriteButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                String messageText = profileText.getText();
+                String messageText = profileField.getText();
                 ProfileManager.getInstance().writeProfileToStorage(messageText, "", true);
                 ProfileManager.getInstance().setCurrentProfile(messageText);
                 ProfileManager.getInstance().setIsNewProfile(true);
