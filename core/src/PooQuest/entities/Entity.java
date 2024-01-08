@@ -62,11 +62,6 @@ public class Entity {
         _frameTime = (_frameTime + delta) % WALK_NB_COLS; //Want to avoid overflow
     }
 
-    public void init(float startX, float startY) {
-        this._currentPlayerPosition.x = startX;
-        this._currentPlayerPosition.y = startY;
-    }
-
     private void loadDefaultSprite() {
         Texture texture = ResourceManager.getTextureAsset(_entitySpritePath);
         TextureRegion[][] textureFrames = TextureRegion.split(texture, FRAME_WIDTH, FRAME_HEIGHT);
