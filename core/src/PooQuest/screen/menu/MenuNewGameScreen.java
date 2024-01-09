@@ -128,15 +128,16 @@ public class MenuNewGameScreen extends MenuScreen {
         playButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent even, float x, float y) {
-                String messageText = profileField.getText();
-                boolean exists = ProfileManager.getInstance().doesProfileExist(messageText);
+                String profileName = profileField.getText();
+                boolean exists = ProfileManager.getInstance().doesProfileExist(profileName);
                 if (exists) {
                     overwriteDialog.show(mainStage);
                 } else {
-                    ProfileManager.getInstance().writeProfileToStorage(messageText, "", false);
+                    ProfileManager.getInstance().writeProfileToStorage(profileName, "", false);
                     ProfileManager.getInstance().setProperty("playerClass", classSelectBox.getSelected());
-                    ProfileManager.getInstance().setCurrentProfile(messageText);
+                    ProfileManager.getInstance().setCurrentProfile(profileName);
                     ProfileManager.getInstance().setIsNewProfile(true);
+                    ProfileManager.getInstance().saveProfile();
                     context.setScreen(ScreenType.GAME);
                 }
             }
@@ -167,11 +168,12 @@ public class MenuNewGameScreen extends MenuScreen {
         overwriteButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                String messageText = profileField.getText();
-                ProfileManager.getInstance().writeProfileToStorage(messageText, "", true);
-                ProfileManager.getInstance().setProperty("playerClass", classSelectBox.getSelected());
-                ProfileManager.getInstance().setCurrentProfile(messageText);
+                String profileName = profileField.getText();
+                ProfileManager.getInstance().writeProfileToStorage(profileName, "", true);
+                ProfileManager.getInstance().setCurrentProfile(profileName);
                 ProfileManager.getInstance().setIsNewProfile(true);
+                ProfileManager.getInstance().setProperty("playerClass", classSelectBox.getSelected());
+                ProfileManager.getInstance().saveProfile();
                 overwriteDialog.hide();
                 context.setScreen(ScreenType.GAME);
             }

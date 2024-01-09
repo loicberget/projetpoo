@@ -82,7 +82,7 @@ public class MenuLoadGameScreen extends MenuScreen {
 
     // Method to handle the 'Play' button functionality
     private void handleLoadButton() {
-        addButton("Play", 0, loadTable.getHeight() / 9, loadTable);
+        addButton("Load", 0, loadTable.getHeight() / 9, loadTable);
         Actor loadButton = loadTable.getCells().get(0).getActor();
         topTable.padBottom(loadButton.getHeight());
         bottomTable.add(loadButton).padRight(120).padBottom(50);
@@ -90,6 +90,8 @@ public class MenuLoadGameScreen extends MenuScreen {
         loadButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                ProfileManager.getInstance().setCurrentProfile(listItems.getSelected());
+                ProfileManager.getInstance().loadProfile();
                 context.setScreen(ScreenType.GAME);
             }
         });
