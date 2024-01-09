@@ -1,5 +1,6 @@
 package PooQuest.screen;
 
+import PooQuest.screen.menu.MenuNewGameScreen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
@@ -21,6 +22,8 @@ public class LoadingScreen extends AbstractScreen {
 
         this.assetManager = context.getAssetManager();
         assetManager.load("map/map.tmx", TiledMap.class);
+
+        MenuNewGameScreen.loadMenuAssets();
     }
 
     @Override

@@ -53,12 +53,19 @@ public class MenuNewGameScreen extends MenuScreen {
         resourceManager.setMenuNewGameScreen(true);
 
         currentCharacterDrawable = new TextureRegionDrawable();
+
         loadTexturesAndAnimations();
 
         createMainTable();
 
         createOverwriteDialog();
 
+    }
+
+    public static void loadMenuAssets() {
+        ResourceManager.loadTextureAsset(warriorTexturePath);
+        ResourceManager.loadTextureAsset(mageTexturePath);
+        ResourceManager.loadTextureAsset(thiefTexturePath);
     }
 
     private void loadTexturesAndAnimations() {
