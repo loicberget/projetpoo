@@ -95,7 +95,7 @@ public class GameScreen extends AbstractScreen {
     @Override
     public void show() {
         spawnCollisionAreas();
-        player = PlayerCharacter.getInstance(new Mage());
+        player = PlayerCharacter.getInstance();
         player.spawn(world, map);
     }
 

@@ -10,12 +10,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Array;
 import PooQuest.manager.ResourceManager;
 import PooQuest.profile.ProfileManager;
 import PooQuest.PooQuest;
 import PooQuest.screen.ScreenType;
 import PooQuest.utilities.Utilities;
+
+import java.util.HashMap;
 
 import static PooQuest.audio.AudioObserver.AudioTypeEvent.MENU_THEME;
 
@@ -36,19 +37,17 @@ public class MenuNewGameScreen extends MenuScreen {
     private float characterFrametime = 0f;
     private Image characterImage;
     private final TextureRegionDrawable currentCharacterDrawable;
-    private Array<Animation<TextureRegion>> walkAnimation;
-
-    private static int WARRIOR = 0;
-    private static int MAGE = 1;
-    private static int THIEF = 2;
-
-    private static int selectedClass = WARRIOR;
+    private static final String WARRIOR = "Warrior";
+    private static final String MAGE = "Mage";
+    private static final String THIEF = "Thief";
+    private static String selectedClass = WARRIOR;
+    private static final HashMap<String, Animation<TextureRegion>> walkAnimationMap = new HashMap<>();
+    SelectBox<String> classSelectBox = new SelectBox<>(ResourceManager.skin);
 
     public MenuNewGameScreen(PooQuest context, ScreenType previousScreen, ResourceManager resourceManager) {
         super(context, resourceManager);
         this.previousScreen = previousScreen;
         super.musicTheme = MENU_THEME;
-
 
         resourceManager.setMenuNewGameScreen(true);
 
@@ -69,10 +68,9 @@ public class MenuNewGameScreen extends MenuScreen {
     }
 
     private void loadTexturesAndAnimations() {
-        walkAnimation = new Array<>();
-        walkAnimation.insert(WARRIOR, Utilities.createAnimationFromTx(warriorTexturePath, WALK_DOWN_ROW, FRAME_COLS, FRAME_WIDTH, FRAME_HEIGHT));
-        walkAnimation.insert(MAGE, Utilities.createAnimationFromTx(mageTexturePath, WALK_DOWN_ROW, FRAME_COLS, FRAME_WIDTH, FRAME_HEIGHT));
-        walkAnimation.insert(THIEF, Utilities.createAnimationFromTx(thiefTexturePath, WALK_DOWN_ROW, FRAME_COLS, FRAME_WIDTH, FRAME_HEIGHT));
+        walkAnimationMap.put(WARRIOR, Utilities.createAnimationFromTx(warriorTexturePath, WALK_DOWN_ROW, FRAME_COLS, FRAME_WIDTH, FRAME_HEIGHT));
+        walkAnimationMap.put(MAGE, Utilities.createAnimationFromTx(mageTexturePath, WALK_DOWN_ROW, FRAME_COLS, FRAME_WIDTH, FRAME_HEIGHT));
+        walkAnimationMap.put(THIEF, Utilities.createAnimationFromTx(thiefTexturePath, WALK_DOWN_ROW, FRAME_COLS, FRAME_WIDTH, FRAME_HEIGHT));
     }
 
     private void createMainTable() {
@@ -101,7 +99,6 @@ public class MenuNewGameScreen extends MenuScreen {
 
         characterImage = new Image(currentCharacterFrame);
 
-        SelectBox<String> classSelectBox = new SelectBox<>(ResourceManager.skin);
         classSelectBox.setItems("Warrior", "Mage", "Thief");
 
         mainTable.add(classLabel).center();
@@ -137,6 +134,7 @@ public class MenuNewGameScreen extends MenuScreen {
                     overwriteDialog.show(mainStage);
                 } else {
                     ProfileManager.getInstance().writeProfileToStorage(messageText, "", false);
+                    ProfileManager.getInstance().setProperty("playerClass", classSelectBox.getSelected());
                     ProfileManager.getInstance().setCurrentProfile(messageText);
                     ProfileManager.getInstance().setIsNewProfile(true);
                     context.setScreen(ScreenType.GAME);
@@ -171,6 +169,7 @@ public class MenuNewGameScreen extends MenuScreen {
             public void clicked(InputEvent event, float x, float y) {
                 String messageText = profileField.getText();
                 ProfileManager.getInstance().writeProfileToStorage(messageText, "", true);
+                ProfileManager.getInstance().setProperty("playerClass", classSelectBox.getSelected());
                 ProfileManager.getInstance().setCurrentProfile(messageText);
                 ProfileManager.getInstance().setIsNewProfile(true);
                 overwriteDialog.hide();
@@ -210,7 +209,7 @@ public class MenuNewGameScreen extends MenuScreen {
 
     private void setCurrentCharacterDrawable(float delta) {
         characterFrametime = (characterFrametime + delta) % FRAME_COLS;
-        currentCharacterFrame = walkAnimation.get(selectedClass).getKeyFrame(characterFrametime);
+        currentCharacterFrame = walkAnimationMap.get(selectedClass).getKeyFrame(characterFrametime);
         currentCharacterDrawable.setRegion(currentCharacterFrame);
         characterImage.setDrawable(currentCharacterDrawable);
     }

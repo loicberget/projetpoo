@@ -2,6 +2,7 @@ package PooQuest.character;
 
 import PooQuest.entities.Entity;
 import PooQuest.entities.EntitySprite;
+import PooQuest.profile.ProfileManager;
 import PooQuest.utilities.Direction;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -18,15 +19,20 @@ public class PlayerCharacter extends Entity {
         directionKeyMap.put(Input.Keys.DOWN, Direction.DOWN);
     }
     private CharacterClass characterClass;
-    private PlayerCharacter(CharacterClass characterClass){
-        this.characterClass = characterClass;
+    private PlayerCharacter() {
+        String characterClassName = ProfileManager.getInstance().getProperty("playerClass", String.class);
+        try {
+            this.characterClass = (CharacterClass) CharacterClass.classMap.get(characterClassName).newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
         sprite = new EntitySprite();
         sprite.setSpritePath(characterClass.spritePath);
     }
 
-    public static PlayerCharacter getInstance(CharacterClass characterClass){
+    public static PlayerCharacter getInstance() {
         if(instance == null){
-            instance = new PlayerCharacter(characterClass);
+            instance = new PlayerCharacter();
         }
         return instance;
     }
