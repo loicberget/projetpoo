@@ -1,6 +1,5 @@
 package PooQuest.screen;
 
-import PooQuest.character.Mage;
 import PooQuest.character.PlayerCharacter;
 import PooQuest.entities.Entity;
 import com.badlogic.gdx.Gdx;
