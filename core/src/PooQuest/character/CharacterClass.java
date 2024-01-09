@@ -1,11 +1,12 @@
 package PooQuest.character;
 
 public abstract class CharacterClass {
-    private int baseHealth;
-    private int baseMana;
-    protected CharacterClass(int baseHealth, int baseMana){
-        this.baseHealth = baseHealth;
-        this.baseMana = baseMana;
+    protected String spritePath;
+    protected int baseHealth;
+    protected int baseMana;
+
+    public void setSpritePath(String spritePath) {
+        this.spritePath = spritePath;
     }
     public int getBaseHealth() {
         return baseHealth;

@@ -2,6 +2,8 @@ package PooQuest.character;
 
 public class Mage extends CharacterClass {
     public Mage(){
-        super(50, 150);
+        this.baseHealth = 50;
+        this.baseMana = 150;
+        this.spritePath = "sprites/characters/mage-fists.png";
     }
 }

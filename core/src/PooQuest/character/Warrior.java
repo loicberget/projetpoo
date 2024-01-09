@@ -2,6 +2,8 @@ package PooQuest.character;
 
 public class Warrior extends CharacterClass {
     public Warrior(){
-        super(150, 50);
+        this.baseHealth = 150;
+        this.baseMana = 100;
+        this.spritePath = "sprites/characters/warrior-fists.png";
     }
 }
