@@ -90,7 +90,8 @@ public abstract class Entity {
         position.set(body.getPosition());
         if(hasReachedNextTile()) {
             stopWalking();
-        } else sprite.update(delta);
+        } else if (isWalking())
+            sprite.update(delta);
     }
 
     public TextureRegion getSpriteFrame() {
