@@ -14,8 +14,8 @@ import com.badlogic.gdx.physics.box2d.*;
 import java.util.HashMap;
 
 public abstract class Entity {
-    private static final BodyDef bodyDef;
-    private static final FixtureDef fixtureDef;
+    protected BodyDef bodyDef;
+    protected FixtureDef fixtureDef;
     private static final float baseVelocity = 4f;
     private static final HashMap<Direction, Vector2> directionVectorMap;
     private static final float TILE_SIZE = 1f;
@@ -23,19 +23,6 @@ public abstract class Entity {
 
     // Definition du body et des fixtures ainsi que des vecteurs de direction pour toutes les entités
     static {
-        bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.DynamicBody;
-
-        fixtureDef = new FixtureDef();
-        fixtureDef.isSensor = false;
-        fixtureDef.restitution = 0;
-        fixtureDef.friction = 0.2f;
-        fixtureDef.filter.categoryBits = PooQuest.BIT_PLAYER;
-        fixtureDef.filter.maskBits = PooQuest.BIT_GROUND;
-        final PolygonShape pShape = new PolygonShape();
-        pShape.setAsBox(0.5f, 0.5f);
-        fixtureDef.shape = pShape;
-
         directionVectorMap = new HashMap<>();
         directionVectorMap.put(UP, new Vector2(0f, baseVelocity));
         directionVectorMap.put(DOWN, new Vector2(0f, -baseVelocity));
@@ -43,7 +30,27 @@ public abstract class Entity {
         directionVectorMap.put(RIGHT, new Vector2(baseVelocity, 0f));
     }
 
-    public static void dispose() {
+    protected void defineBodyAndFixtureForNPCs() {
+        bodyDef = new BodyDef();
+
+        bodyDef.position.set(0, 0);
+        bodyDef.gravityScale = 1;
+        bodyDef.type = BodyDef.BodyType.StaticBody;
+
+        fixtureDef = new FixtureDef();
+        fixtureDef.density = 0;
+        fixtureDef.isSensor = false;
+        fixtureDef.restitution = 0;
+        fixtureDef.friction = 0.2f;
+        fixtureDef.filter.categoryBits = PooQuest.BIT_GROUND;
+        fixtureDef.filter.maskBits = PooQuest.BIT_PLAYER;
+
+        final PolygonShape boxShape = new PolygonShape();
+        boxShape.setAsBox(TILE_HALF, TILE_HALF);
+        fixtureDef.shape = boxShape;
+    }
+
+    public void dispose() {
         fixtureDef.shape.dispose();
     }
 
@@ -62,13 +69,12 @@ public abstract class Entity {
         return !body.getLinearVelocity().isZero();
     }
 
-    public void spawn(World world, Map map) {
+    public void spawn(World world, Vector2 position) {
         body = world.createBody(bodyDef);
         body.createFixture(fixtureDef);
-        body.setTransform(map.getStartLocation(), 0);
-        position = new Vector2();
+        body.setTransform(position, 0);
+        this.position = new Vector2(position);
         startMovingPosition = new Vector2();
-        position.set(map.getStartLocation());
         sprite.load();
     }
 

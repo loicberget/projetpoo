@@ -1,7 +1,9 @@
 package PooQuest.screen;
 
 import PooQuest.character.PlayerCharacter;
+import PooQuest.entities.Blacksmith;
 import PooQuest.entities.Entity;
+import PooQuest.entities.SpellVendor;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -33,6 +35,8 @@ public class GameScreen extends AbstractScreen {
     private final OrthographicCamera gameCamera;
     private final GLProfiler profiler;
     private final Map map;
+    private Blacksmith blacksmith;
+    private SpellVendor spellVendor;
 
     // constructor
     public GameScreen(final PooQuest context) {
@@ -95,7 +99,11 @@ public class GameScreen extends AbstractScreen {
     public void show() {
         spawnCollisionAreas();
         player = PlayerCharacter.getInstance();
-        player.spawn(world, map);
+        player.spawn(world, map.getStartLocation());
+        blacksmith = new Blacksmith();
+        blacksmith.spawn(world, map.getBlacksmithLocation());
+        spellVendor = new SpellVendor();
+        spellVendor.spawn(world, map.getSpellVendorLocation());
     }
 
     @Override
@@ -113,6 +121,18 @@ public class GameScreen extends AbstractScreen {
                 player.getSpriteFrame(),
                 player.position.x - CHAR_SPRITE_X_OFFSET,
                 player.position.y - CHAR_SPRITE_Y_OFFSET,
+                CHAR_SPRITE_WIDTH,
+                CHAR_SPRITE_HEIGHT);
+        mapRenderer.getBatch().draw(
+                blacksmith.getSpriteFrame(),
+                blacksmith.position.x - CHAR_SPRITE_X_OFFSET,
+                blacksmith.position.y - CHAR_SPRITE_Y_OFFSET,
+                CHAR_SPRITE_WIDTH,
+                CHAR_SPRITE_HEIGHT);
+        mapRenderer.getBatch().draw(
+                spellVendor.getSpriteFrame(),
+                spellVendor.position.x - CHAR_SPRITE_X_OFFSET,
+                spellVendor.position.y - CHAR_SPRITE_Y_OFFSET,
                 CHAR_SPRITE_WIDTH,
                 CHAR_SPRITE_HEIGHT);
         mapRenderer.getBatch().end();
@@ -139,7 +159,6 @@ public class GameScreen extends AbstractScreen {
     @Override
     public void dispose() {
         mapRenderer.dispose();
-        Entity.dispose();
     }
 
     @Override

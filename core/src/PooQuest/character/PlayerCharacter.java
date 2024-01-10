@@ -1,11 +1,15 @@
 package PooQuest.character;
 
+import PooQuest.PooQuest;
 import PooQuest.entities.Entity;
 import PooQuest.entities.EntitySprite;
 import PooQuest.profile.ProfileManager;
 import PooQuest.utilities.Direction;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 
 import java.util.HashMap;
 
@@ -20,6 +24,7 @@ public class PlayerCharacter extends Entity {
     }
     private CharacterClass characterClass;
     private PlayerCharacter() {
+        defineBodyAndFixtureForPlayer();
         String characterClassName = ProfileManager.getInstance().getProperty("playerClass", String.class);
         try {
             this.characterClass = (CharacterClass) CharacterClass.classMap.get(characterClassName).newInstance();
@@ -28,6 +33,24 @@ public class PlayerCharacter extends Entity {
         }
         sprite = new EntitySprite();
         sprite.setSpritePath(characterClass.spritePath);
+    }
+
+    private void defineBodyAndFixtureForPlayer() {
+        bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
+        bodyDef.position.set(0, 0);
+
+        fixtureDef = new FixtureDef();
+        fixtureDef.density = 0;
+        fixtureDef.isSensor = false;
+        fixtureDef.restitution = 0;
+        fixtureDef.friction = 0.2f;
+        fixtureDef.filter.categoryBits = PooQuest.BIT_PLAYER;
+        fixtureDef.filter.maskBits = PooQuest.BIT_GROUND;
+
+        final PolygonShape boxShape = new PolygonShape();
+        boxShape.setAsBox(0.5f, 0.5f);
+        fixtureDef.shape = boxShape;
     }
 
     public static PlayerCharacter getInstance() {
