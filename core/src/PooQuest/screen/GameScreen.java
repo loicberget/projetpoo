@@ -113,6 +113,13 @@ public class GameScreen extends AbstractScreen {
         player.update(delta);
         player.processInput();
 
+        if(blacksmith.isNear(player)) {
+            Gdx.app.debug(TAG, "Blacksmith is near");
+        }
+        if(spellVendor.isNear(player)) {
+            Gdx.app.debug(TAG, "Spell vendor is near");
+        }
+
         viewport.apply(true);
         mapRenderer.setView(gameCamera); // TODO :  Comparer avec les valeurs au breakpoint avec le fichier original (a retelecharger sur github)
         mapRenderer.render();

@@ -30,26 +30,6 @@ public abstract class Entity {
         directionVectorMap.put(RIGHT, new Vector2(baseVelocity, 0f));
     }
 
-    protected void defineBodyAndFixtureForNPCs() {
-        bodyDef = new BodyDef();
-
-        bodyDef.position.set(0, 0);
-        bodyDef.gravityScale = 1;
-        bodyDef.type = BodyDef.BodyType.StaticBody;
-
-        fixtureDef = new FixtureDef();
-        fixtureDef.density = 0;
-        fixtureDef.isSensor = false;
-        fixtureDef.restitution = 0;
-        fixtureDef.friction = 0.2f;
-        fixtureDef.filter.categoryBits = PooQuest.BIT_GROUND;
-        fixtureDef.filter.maskBits = PooQuest.BIT_PLAYER;
-
-        final PolygonShape boxShape = new PolygonShape();
-        boxShape.setAsBox(TILE_HALF, TILE_HALF);
-        fixtureDef.shape = boxShape;
-    }
-
     public void dispose() {
         fixtureDef.shape.dispose();
     }

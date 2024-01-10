@@ -1,8 +1,7 @@
 package PooQuest.entities;
 
-public class SpellVendor extends Entity {
+public class SpellVendor extends Vendor {
     public SpellVendor() {
-        defineBodyAndFixtureForNPCs();
         sprite = new EntitySprite();
         sprite.setSpritePath("sprites/characters/kiara-the-blacksmith.png");
     }
