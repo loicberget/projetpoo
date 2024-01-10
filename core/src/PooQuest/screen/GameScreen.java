@@ -38,7 +38,6 @@ public class GameScreen extends AbstractScreen {
     private Blacksmith blacksmith;
     private SpellVendor spellVendor;
 
-    // constructor
     public GameScreen(final PooQuest context) {
         super(context, resourceManager);
         this.assetManager = context.getAssetManager();
@@ -58,7 +57,7 @@ public class GameScreen extends AbstractScreen {
 
     @Override
     protected Table getScreenUI(Skin skin) {
-        return new GameUI(stage, skin);
+        return new GameUI(stage, ResourceManager.skin);
     }
 
     private void resetBodyandFixtureDefinition() {
@@ -120,16 +119,22 @@ public class GameScreen extends AbstractScreen {
             Gdx.app.debug(TAG, "Spell vendor is near");
         }
 
+        renderMapAndEntities();
+    }
+
+    private void renderMapAndEntities() {
         viewport.apply(true);
         mapRenderer.setView(gameCamera); // TODO :  Comparer avec les valeurs au breakpoint avec le fichier original (a retelecharger sur github)
         mapRenderer.render();
         mapRenderer.getBatch().begin();
-        mapRenderer.getBatch().draw(
-                player.getSpriteFrame(),
-                player.position.x - CHAR_SPRITE_X_OFFSET,
-                player.position.y - CHAR_SPRITE_Y_OFFSET,
-                CHAR_SPRITE_WIDTH,
-                CHAR_SPRITE_HEIGHT);
+        renderPlayer();
+        renderVendors();
+        mapRenderer.getBatch().end();
+
+        box2DDebugRenderer.render(world, viewport.getCamera().combined);
+    }
+
+    private void renderVendors() {
         mapRenderer.getBatch().draw(
                 blacksmith.getSpriteFrame(),
                 blacksmith.position.x - CHAR_SPRITE_X_OFFSET,
@@ -142,9 +147,15 @@ public class GameScreen extends AbstractScreen {
                 spellVendor.position.y - CHAR_SPRITE_Y_OFFSET,
                 CHAR_SPRITE_WIDTH,
                 CHAR_SPRITE_HEIGHT);
-        mapRenderer.getBatch().end();
+    }
 
-        box2DDebugRenderer.render(world, viewport.getCamera().combined);
+    private void renderPlayer() {
+        mapRenderer.getBatch().draw(
+                player.getSpriteFrame(),
+                player.position.x - CHAR_SPRITE_X_OFFSET,
+                player.position.y - CHAR_SPRITE_Y_OFFSET,
+                CHAR_SPRITE_WIDTH,
+                CHAR_SPRITE_HEIGHT);
     }
 
 
