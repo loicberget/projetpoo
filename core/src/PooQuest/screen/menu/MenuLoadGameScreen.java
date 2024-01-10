@@ -63,7 +63,7 @@ public class MenuLoadGameScreen extends MenuScreen {
     // Method to create and populate the profile list
     private void createProfileList() {
         ProfileManager.getInstance().storeAllProfiles();
-        listItems = new List<>(ResourceManager.skin);
+        listItems = new List<>(resourceManager.skin);
         Array<String> profiles = ProfileManager.getInstance().getProfileList();
         listItems.setItems(profiles);
         ScrollPane scrollPane = configureScrollPane(listItems);

@@ -12,7 +12,7 @@ import java.util.Hashtable;
  * Singleton class that manages audio playback.
  */
 public class AudioManager implements AudioObserver {
-
+    ResourceManager resourceManager = ResourceManager.getInstance();
     private static final Logger LOGGER = LoggerFactory.getLogger(AudioManager.class);
     private static AudioManager instance = null;
 
@@ -76,7 +76,7 @@ public class AudioManager implements AudioObserver {
     public void onNotify(AudioCommand command, AudioTypeEvent event) {
         switch (command) {
             case MUSIC_LOAD:
-                ResourceManager.loadMusicAsset(event.getValue());
+                resourceManager.loadMusicAsset(event.getValue());
                 break;
             case MUSIC_PLAY_ONCE:
                 playMusic(false, event.getValue());
@@ -104,8 +104,8 @@ public class AudioManager implements AudioObserver {
      */
     private void playMusic(boolean isLooping, String fullFilePath) {
         Music music = queuedMusic.get(fullFilePath);
-        if (music == null && ResourceManager.isAssetLoaded(fullFilePath)) {
-            music = ResourceManager.getMusicAsset(fullFilePath);
+        if (music == null && resourceManager.isAssetLoaded(fullFilePath)) {
+            music = resourceManager.getMusicAsset(fullFilePath);
             queuedMusic.put(fullFilePath, music);
         }
         if (music != null) {

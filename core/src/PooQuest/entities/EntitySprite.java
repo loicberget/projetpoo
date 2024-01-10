@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import java.util.HashMap;
 
 public class EntitySprite {
+    ResourceManager resourceManager = ResourceManager.getInstance();
     private String spritePath;
     private final int WALK_NB_COLS = 9, WALK_UP_ROW = 8, WALK_LEFT_ROW = 9, WALK_DOWN_ROW = 10, WALK_RIGHT_ROW = 11, FRAME_WIDTH = 64, FRAME_HEIGHT = 64;
     private float _frameTime = 0f;
@@ -26,7 +27,7 @@ public class EntitySprite {
     }
 
     public void load() {
-        ResourceManager.loadTextureAsset(spritePath);
+        resourceManager.loadTextureAsset(spritePath);
         _walkAnimations = new HashMap<>();
         _walkAnimations.put(UP, Utilities.createAnimationFromTx(spritePath, WALK_UP_ROW, WALK_NB_COLS, FRAME_WIDTH, FRAME_HEIGHT));
         _walkAnimations.put(DOWN, Utilities.createAnimationFromTx(spritePath, WALK_DOWN_ROW, WALK_NB_COLS, FRAME_WIDTH, FRAME_HEIGHT));
@@ -36,7 +37,7 @@ public class EntitySprite {
     }
 
     public void dispose() {
-        ResourceManager.unloadAsset(spritePath);
+        resourceManager.unloadAsset(spritePath);
     }
 
     public TextureRegion getFrame() {

@@ -26,23 +26,23 @@ public class MenuNewGameScreen extends MenuScreen {
     private TextField profileField;
     private Dialog overwriteDialog;
     private ScreenType previousScreen;
-    private final static String warriorTexturePath = "sprites/characters/warrior-fists.png";
-    private final static String mageTexturePath = "sprites/characters/mage-fists.png";
+    private static final String warriorTexturePath = "sprites/characters/warrior-fists.png";
+    private static final String mageTexturePath = "sprites/characters/mage-fists.png";
     private static final String thiefTexturePath = "sprites/characters/thief-fists.png";
-    private static final int FRAME_WIDTH = 64;
-    private static final int FRAME_HEIGHT = 64;
-    private static final int FRAME_COLS = 9;
-    private static final int WALK_DOWN_ROW = 10;
+    private final int FRAME_WIDTH = 64;
+    private final int FRAME_HEIGHT = 64;
+    private final int FRAME_COLS = 9;
+    private final int WALK_DOWN_ROW = 10;
     private TextureRegion currentCharacterFrame;
     private float characterFrametime = 0f;
     private Image characterImage;
     private final TextureRegionDrawable currentCharacterDrawable;
-    private static final String WARRIOR = "Warrior";
-    private static final String MAGE = "Mage";
-    private static final String THIEF = "Thief";
-    private static String selectedClass = WARRIOR;
-    private static final HashMap<String, Animation<TextureRegion>> walkAnimationMap = new HashMap<>();
-    SelectBox<String> classSelectBox = new SelectBox<>(ResourceManager.skin);
+    private final String WARRIOR = "Warrior";
+    private final String MAGE = "Mage";
+    private final String THIEF = "Thief";
+    private String selectedClass = WARRIOR;
+    private final HashMap<String, Animation<TextureRegion>> walkAnimationMap = new HashMap<>();
+    SelectBox<String> classSelectBox = new SelectBox<>(resourceManager.skin);
 
     public MenuNewGameScreen(PooQuest context, ScreenType previousScreen, ResourceManager resourceManager) {
         super(context, resourceManager);
@@ -62,9 +62,10 @@ public class MenuNewGameScreen extends MenuScreen {
     }
 
     public static void loadMenuAssets() {
-        ResourceManager.loadTextureAsset(warriorTexturePath);
-        ResourceManager.loadTextureAsset(mageTexturePath);
-        ResourceManager.loadTextureAsset(thiefTexturePath);
+        ResourceManager r = ResourceManager.getInstance();
+        r.loadTextureAsset(warriorTexturePath);
+        r.loadTextureAsset(mageTexturePath);
+        r.loadTextureAsset(thiefTexturePath);
     }
 
     private void loadTexturesAndAnimations() {
@@ -86,8 +87,8 @@ public class MenuNewGameScreen extends MenuScreen {
     }
 
     private void createProfileTextField() {
-        Label profileLabel = new Label("Enter Profile Name: ", ResourceManager.skin);
-        profileField = new TextField("", ResourceManager.skin);
+        Label profileLabel = new Label("Enter Profile Name: ", resourceManager.skin);
+        profileField = new TextField("", resourceManager.skin);
         profileField.setMaxLength(20);
         profileField.setMessageText("Your name");
         mainTable.add(profileLabel).center().colspan(2).row();
@@ -95,7 +96,7 @@ public class MenuNewGameScreen extends MenuScreen {
     }
 
     private void createClassSelectBox() {
-        Label classLabel = new Label("Select Class: ", ResourceManager.skin);
+        Label classLabel = new Label("Select Class: ", resourceManager.skin);
 
         characterImage = new Image(currentCharacterFrame);
 
@@ -155,8 +156,8 @@ public class MenuNewGameScreen extends MenuScreen {
     }
 
     private void createOverwriteDialog() {
-        overwriteDialog = new Dialog("Overwrite?", ResourceManager.skin);
-        Label overwriteLabel = new Label("Overwrite existing profile name?", ResourceManager.skin);
+        overwriteDialog = new Dialog("Overwrite?", resourceManager.skin);
+        Label overwriteLabel = new Label("Overwrite existing profile name?", resourceManager.skin);
 
         overwriteDialog.setKeepWithinStage(true);
         overwriteDialog.setModal(true);
@@ -164,7 +165,7 @@ public class MenuNewGameScreen extends MenuScreen {
         overwriteDialog.text(overwriteLabel);
         overwriteDialog.row();
 
-        TextButton overwriteButton = new TextButton("Overwrite", ResourceManager.skin);
+        TextButton overwriteButton = new TextButton("Overwrite", resourceManager.skin);
         overwriteButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -180,7 +181,7 @@ public class MenuNewGameScreen extends MenuScreen {
         });
         overwriteDialog.button(overwriteButton).bottom().left();
 
-        TextButton cancelButton = new TextButton("Cancel", ResourceManager.skin);
+        TextButton cancelButton = new TextButton("Cancel", resourceManager.skin);
         cancelButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {

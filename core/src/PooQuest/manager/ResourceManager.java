@@ -14,20 +14,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ResourceManager {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ResourceManager.class);
-
-    private static final String TAG = ResourceManager.class.getSimpleName();
+    private static ResourceManager instance = null;
+    private final Logger LOGGER = LoggerFactory.getLogger(ResourceManager.class);
+    private final String TAG = ResourceManager.class.getSimpleName();
     protected boolean isMusicScreen;
     protected boolean isMenuNewGameScreen;
     protected boolean isMenuLoadGameScreen;
-    private static InternalFileHandleResolver filePathResolver =  new InternalFileHandleResolver();
+    private InternalFileHandleResolver filePathResolver =  new InternalFileHandleResolver();
     public TextureAtlas atlas;
     // IMAGES
     public Texture backgroundSheet;
     // SETTINGS
-    public static Skin skin;
+    public Skin skin;
     public BitmapFont pixel10Bold;
-    private static AssetManager assetManager = new AssetManager();
+    private AssetManager assetManager = new AssetManager();
 
     public ResourceManager() {
 
@@ -45,6 +45,13 @@ public class ResourceManager {
 
         // SETTINGS
         skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+    }
+
+    public static ResourceManager getInstance() {
+        if (instance==null) {
+            instance = new ResourceManager();
+        }
+        return instance;
     }
 
     public boolean isMusicScreen() {
@@ -72,13 +79,13 @@ public class ResourceManager {
     }
 
 
-    public static boolean isAssetLoaded(String fileName) {
+    public boolean isAssetLoaded(String fileName) {
         return assetManager.isLoaded(fileName);
     }
 
 
 
-    public static void loadMusicAsset(String musicFilenamePath) {
+    public void loadMusicAsset(String musicFilenamePath) {
         if (musicFilenamePath == null || musicFilenamePath.isEmpty()) {
             return;
         }
@@ -98,7 +105,7 @@ public class ResourceManager {
         }
     }
 
-    public static Music getMusicAsset(String musicFilenamePath) {
+    public Music getMusicAsset(String musicFilenamePath) {
         Music music = null;
 
         // once the asset manager is done loading
@@ -119,12 +126,12 @@ public class ResourceManager {
         backgroundSheet.dispose();
     }
 
-    public static void loadTextureAsset(String textureFilenamePath){
+    public void loadTextureAsset(String textureFilenamePath){
         if( textureFilenamePath == null || textureFilenamePath.isEmpty() ){
             return;
         }
 
-        if( assetManager.isLoaded(textureFilenamePath) ){
+        if(assetManager.isLoaded(textureFilenamePath) ){
             return;
         }
 
@@ -140,7 +147,7 @@ public class ResourceManager {
         }
     }
 
-    public static Texture getTextureAsset(String textureFilenamePath){
+    public Texture getTextureAsset(String textureFilenamePath){
         Texture texture = null;
 
         // once the asset manager is done loading
@@ -153,7 +160,7 @@ public class ResourceManager {
         return texture;
     }
 
-    public static void unloadAsset(String assetFilenamePath){
+    public void unloadAsset(String assetFilenamePath){
         // once the asset manager is done loading
         if( assetManager.isLoaded(assetFilenamePath) ){
             assetManager.unload(assetFilenamePath);

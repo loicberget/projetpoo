@@ -13,6 +13,8 @@ import PooQuest.map.Map;
 import PooQuest.PooQuest;
 import PooQuest.ui.LoadingUI;
 
+import java.awt.*;
+
 public class LoadingScreen extends AbstractScreen {
     private static final ResourceManager resourceManager = null;
     private final AssetManager assetManager;

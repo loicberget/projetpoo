@@ -22,7 +22,7 @@ import PooQuest.ui.GameUI;
 
 public class GameScreen extends AbstractScreen {
     public static final String TAG = GameScreen.class.getSimpleName();
-    private static final ResourceManager resourceManager = null;
+    private static final ResourceManager resourceManager = ResourceManager.getInstance();
     private static final float CHAR_SPRITE_X_OFFSET = 0.7f;
     private static final float CHAR_SPRITE_Y_OFFSET = 0.5f;
     private static final float CHAR_SPRITE_WIDTH = 1.3f;
@@ -57,7 +57,7 @@ public class GameScreen extends AbstractScreen {
 
     @Override
     protected Table getScreenUI(Skin skin) {
-        return new GameUI(stage, ResourceManager.skin);
+        return new GameUI(stage, resourceManager.skin);
     }
 
     private void resetBodyandFixtureDefinition() {
