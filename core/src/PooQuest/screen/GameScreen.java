@@ -2,8 +2,8 @@ package PooQuest.screen;
 
 import PooQuest.character.PlayerCharacter;
 import PooQuest.entities.Blacksmith;
-import PooQuest.entities.Entity;
 import PooQuest.entities.SpellVendor;
+import PooQuest.manager.ResourceManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -14,7 +14,6 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.ScreenUtils;
-import PooQuest.manager.ResourceManager;
 import PooQuest.map.CollisionArea;
 import PooQuest.map.Map;
 import PooQuest.PooQuest;
@@ -22,7 +21,6 @@ import PooQuest.ui.GameUI;
 
 public class GameScreen extends AbstractScreen {
     public static final String TAG = GameScreen.class.getSimpleName();
-    private static final ResourceManager resourceManager = ResourceManager.getInstance();
     private static final float CHAR_SPRITE_X_OFFSET = 0.7f;
     private static final float CHAR_SPRITE_Y_OFFSET = 0.5f;
     private static final float CHAR_SPRITE_WIDTH = 1.3f;
@@ -38,7 +36,7 @@ public class GameScreen extends AbstractScreen {
     private Blacksmith blacksmith;
     private SpellVendor spellVendor;
 
-    public GameScreen(final PooQuest context) {
+    public GameScreen(final PooQuest context, ResourceManager resourceManager) {
         super(context, resourceManager);
         this.assetManager = context.getAssetManager();
         this.gameCamera = context.getGameCamera();
@@ -96,6 +94,7 @@ public class GameScreen extends AbstractScreen {
 
     @Override
     public void show() {
+        super.show();
         spawnCollisionAreas();
         player = PlayerCharacter.getInstance();
         player.spawn(world, map.getStartLocation());
@@ -112,14 +111,21 @@ public class GameScreen extends AbstractScreen {
         player.update(delta);
         player.processInput();
 
-        if(blacksmith.isNear(player)) {
-            Gdx.app.debug(TAG, "Blacksmith is near");
-        }
-        if(spellVendor.isNear(player)) {
-            Gdx.app.debug(TAG, "Spell vendor is near");
+        ((GameUI)screenUI).processInput();
+
+        if(blacksmith.isNear(player))
+            ((GameUI)screenUI).showVendorPrompt();
+        else{
+            ((GameUI)screenUI).hideVendorPrompt();
+            ((GameUI)screenUI).hideVendorWindow();
         }
 
         renderMapAndEntities();
+
+        stage.setDebugAll(true);
+        
+        stage.act(delta);
+        stage.draw();
     }
 
     private void renderMapAndEntities() {

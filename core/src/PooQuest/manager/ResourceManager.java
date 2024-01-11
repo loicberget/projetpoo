@@ -29,7 +29,7 @@ public class ResourceManager {
     public BitmapFont pixel10Bold;
     private AssetManager assetManager = new AssetManager();
 
-    public ResourceManager() {
+    private ResourceManager() {
 
         // IMAGES
         assetManager.load("background/natureBackground_frames_sheet.png", Texture.class);

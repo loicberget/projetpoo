@@ -80,7 +80,7 @@ public class PooQuest extends Game {
 		screenCache = new EnumMap<ScreenType, AbstractScreen>(ScreenType.class); // Initialized the screen cache
 		setScreen(ScreenType.LOADING); // Starting on the loading screen
 
-		resourceManager = new ResourceManager();
+		resourceManager = ResourceManager.getInstance();
 		preferenceManager = PreferenceManager.getInstance();
 
 	}
@@ -131,7 +131,7 @@ public class PooQuest extends Game {
 			Gdx.app.debug(TAG, "Creating new screen: " + screenType);
 			switch (screenType){
 				case GAME:
-					screenCache.put(screenType, new GameScreen(this));
+					screenCache.put(screenType, new GameScreen(this, resourceManager));
 					setScreen(ScreenType.GAME);
 					break;
 				case MENU:
