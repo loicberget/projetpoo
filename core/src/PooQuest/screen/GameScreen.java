@@ -103,7 +103,7 @@ public class GameScreen extends AbstractScreen {
     @Override
     public void show() {
         super.show();
-        ((GameUI) screenUI).show();
+        player.respawn(map.getStartLocation());
     }
 
     @Override
@@ -132,7 +132,7 @@ public class GameScreen extends AbstractScreen {
         renderVendors();
         mapRenderer.getBatch().end();
 
-//        box2DDebugRenderer.render(world, viewport.getCamera().combined);
+        box2DDebugRenderer.render(world, viewport.getCamera().combined);
     }
 
     private void renderVendors() {
@@ -156,7 +156,6 @@ public class GameScreen extends AbstractScreen {
     private void enterCombat(){
         if(player.position.x > 23){
             context.setScreen(ScreenType.COMBAT);
-            player.position.set(map.getStartLocation());
         }
     }
 
@@ -174,7 +173,6 @@ public class GameScreen extends AbstractScreen {
     @Override
     public void hide() {
         ProfileManager.getInstance().saveProfile();
-        screenUI.setVisible(false);
         super.hide();
     }
 

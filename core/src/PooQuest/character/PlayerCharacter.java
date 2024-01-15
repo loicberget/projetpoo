@@ -7,6 +7,7 @@ import PooQuest.profile.ProfileManager;
 import PooQuest.utilities.Direction;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
@@ -226,5 +227,10 @@ public class PlayerCharacter extends Entity {
         ProfileManager.getInstance().setProperty("playerLevel", getLevel());
         ProfileManager.getInstance().setProperty("playerExperience", getExperience());
         ProfileManager.getInstance().saveProfile();
+    }
+
+    public void respawn(Vector2 respawnPoint){
+        position.set(respawnPoint);
+        body.setTransform(respawnPoint, 0);
     }
 }

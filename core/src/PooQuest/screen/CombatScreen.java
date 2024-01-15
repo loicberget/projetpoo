@@ -76,16 +76,9 @@ public class CombatScreen extends AbstractScreen {
     @Override
     public void show() {
         super.show();
-        screenUI.setVisible(true);
         experience = 0;
         money = 0;
         resetCombatScreen();
-    }
-
-    @Override
-    public void hide() {
-        super.hide();
-        screenUI.setVisible(false);
     }
 
     public int getPlayerMaxHealth() {
