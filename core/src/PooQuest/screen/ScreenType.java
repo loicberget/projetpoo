@@ -15,6 +15,7 @@ public enum ScreenType {
     MENU_NEW_GAME(MenuNewGameScreen.class),
     CHARACTER_SELECTION(CharacterSelectionScreen.class),
     MUSIC(MusicScreen.class),
+    COMBAT(CombatScreen.class)
     ;
 
     private final Class<? extends AbstractScreen> screenClass;

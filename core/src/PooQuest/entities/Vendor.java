@@ -1,11 +1,16 @@
 package PooQuest.entities;
 
 import PooQuest.PooQuest;
+import PooQuest.character.Item;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Array;
 
 public class Vendor extends Entity {
+
+protected Array<Item> inventory;
     public Vendor() {
         defineBodyAndFixtureForNPCs();
     }

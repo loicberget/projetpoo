@@ -2,8 +2,8 @@ package PooQuest.screen;
 
 import PooQuest.character.PlayerCharacter;
 import PooQuest.entities.Blacksmith;
-import PooQuest.entities.SpellVendor;
 import PooQuest.manager.ResourceManager;
+import PooQuest.profile.ProfileManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -34,7 +34,6 @@ public class GameScreen extends AbstractScreen {
     private final GLProfiler profiler;
     private final Map map;
     private Blacksmith blacksmith;
-    private SpellVendor spellVendor;
 
     public GameScreen(final PooQuest context, ResourceManager resourceManager) {
         super(context, resourceManager);
@@ -51,6 +50,15 @@ public class GameScreen extends AbstractScreen {
         final TiledMap tiledMap = assetManager.get("map/map.tmx", TiledMap.class);
         mapRenderer.setMap(tiledMap);
         map = new Map(tiledMap);
+
+
+        spawnCollisionAreas();
+        player = PlayerCharacter.getInstance();
+        player.spawn(world, map.getStartLocation());
+
+        blacksmith = new Blacksmith();
+        blacksmith.spawn(world, map.getBlacksmithLocation());
+        ((GameUI) screenUI).setVendor(blacksmith);
     }
 
     @Override
@@ -95,13 +103,7 @@ public class GameScreen extends AbstractScreen {
     @Override
     public void show() {
         super.show();
-        spawnCollisionAreas();
-        player = PlayerCharacter.getInstance();
-        player.spawn(world, map.getStartLocation());
-        blacksmith = new Blacksmith();
-        blacksmith.spawn(world, map.getBlacksmithLocation());
-        spellVendor = new SpellVendor();
-        spellVendor.spawn(world, map.getSpellVendorLocation());
+        ((GameUI) screenUI).show();
     }
 
     @Override
@@ -111,33 +113,26 @@ public class GameScreen extends AbstractScreen {
         player.update(delta);
         player.processInput();
 
-        ((GameUI)screenUI).processInput();
-
-        if(blacksmith.isNear(player))
-            ((GameUI)screenUI).showVendorPrompt();
-        else{
-            ((GameUI)screenUI).hideVendorPrompt();
-            ((GameUI)screenUI).hideVendorWindow();
-        }
+        ((GameUI) screenUI).update();
 
         renderMapAndEntities();
 
-        stage.setDebugAll(true);
-        
+        enterCombat();
+
         stage.act(delta);
         stage.draw();
     }
 
     private void renderMapAndEntities() {
         viewport.apply(true);
-        mapRenderer.setView(gameCamera); // TODO :  Comparer avec les valeurs au breakpoint avec le fichier original (a retelecharger sur github)
+        mapRenderer.setView(gameCamera);
         mapRenderer.render();
         mapRenderer.getBatch().begin();
         renderPlayer();
         renderVendors();
         mapRenderer.getBatch().end();
 
-        box2DDebugRenderer.render(world, viewport.getCamera().combined);
+//        box2DDebugRenderer.render(world, viewport.getCamera().combined);
     }
 
     private void renderVendors() {
@@ -145,12 +140,6 @@ public class GameScreen extends AbstractScreen {
                 blacksmith.getSpriteFrame(),
                 blacksmith.position.x - CHAR_SPRITE_X_OFFSET,
                 blacksmith.position.y - CHAR_SPRITE_Y_OFFSET,
-                CHAR_SPRITE_WIDTH,
-                CHAR_SPRITE_HEIGHT);
-        mapRenderer.getBatch().draw(
-                spellVendor.getSpriteFrame(),
-                spellVendor.position.x - CHAR_SPRITE_X_OFFSET,
-                spellVendor.position.y - CHAR_SPRITE_Y_OFFSET,
                 CHAR_SPRITE_WIDTH,
                 CHAR_SPRITE_HEIGHT);
     }
@@ -162,6 +151,13 @@ public class GameScreen extends AbstractScreen {
                 player.position.y - CHAR_SPRITE_Y_OFFSET,
                 CHAR_SPRITE_WIDTH,
                 CHAR_SPRITE_HEIGHT);
+    }
+
+    private void enterCombat(){
+        if(player.position.x > 23){
+            context.setScreen(ScreenType.COMBAT);
+            player.position.set(map.getStartLocation());
+        }
     }
 
 
@@ -177,7 +173,9 @@ public class GameScreen extends AbstractScreen {
 
     @Override
     public void hide() {
-
+        ProfileManager.getInstance().saveProfile();
+        screenUI.setVisible(false);
+        super.hide();
     }
 
     @Override

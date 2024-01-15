@@ -92,6 +92,7 @@ public class MenuLoadGameScreen extends MenuScreen {
             public void clicked(InputEvent event, float x, float y) {
                 ProfileManager.getInstance().setCurrentProfile(listItems.getSelected());
                 ProfileManager.getInstance().loadProfile();
+                ProfileManager.getInstance().setIsNewProfile(false);
                 context.setScreen(ScreenType.GAME);
             }
         });

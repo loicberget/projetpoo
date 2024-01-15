@@ -1,5 +1,6 @@
 package PooQuest;
 
+import PooQuest.screen.*;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -23,10 +24,6 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import PooQuest.manager.PreferenceManager;
 import PooQuest.manager.ResourceManager;
-import PooQuest.screen.AbstractScreen;
-import PooQuest.screen.GameScreen;
-import PooQuest.screen.LoadingScreen;
-import PooQuest.screen.ScreenType;
 import PooQuest.screen.menu.MenuLoadGameScreen;
 import PooQuest.screen.menu.MenuNewGameScreen;
 import PooQuest.screen.menu.MenuScreen;
@@ -42,7 +39,6 @@ public class PooQuest extends Game {
 	private ResourceManager resourceManager;
 	private PreferenceManager preferenceManager;
 	private World world;
-	private WorldContactListener worldContactListener;
 	private Box2DDebugRenderer box2DDebugRenderer;
 	private float accumulator;
 	private static final float FIXED_TIME_STEP = 1 / 60f;
@@ -61,14 +57,10 @@ public class PooQuest extends Game {
 
 		spriteBatch = new SpriteBatch();
 
-		// Box2D initialization
 		Box2D.init();
-		world = new World(new Vector2(0, 0), true); // Initialized the gravity in our game
-		worldContactListener = new WorldContactListener();
-		world.setContactListener(worldContactListener);
+		world = new World(new Vector2(0, 0), true);
 		box2DDebugRenderer = new Box2DDebugRenderer();
 
-		// Assets initialization
 		assetManager = new AssetManager();
 		assetManager.setLoader(TiledMap.class, new TmxMapLoader(assetManager.getFileHandleResolver()));
 		initializeSkin();
@@ -76,9 +68,9 @@ public class PooQuest extends Game {
 
 		// Screen initialization
 		gameCamera = new OrthographicCamera();
-		screenViewport = new FitViewport(24, 9, gameCamera); // I might need to change that to adapt it for a desktop game
-		screenCache = new EnumMap<ScreenType, AbstractScreen>(ScreenType.class); // Initialized the screen cache
-		setScreen(ScreenType.LOADING); // Starting on the loading screen
+		screenViewport = new FitViewport(24, 9, gameCamera);
+		screenCache = new EnumMap<>(ScreenType.class);
+		setScreen(ScreenType.LOADING);
 
 		resourceManager = ResourceManager.getInstance();
 		preferenceManager = PreferenceManager.getInstance();
@@ -86,7 +78,6 @@ public class PooQuest extends Game {
 	}
 
 	private void initializeSkin() {
-		// generate the ttf bitmaps
 		final ObjectMap<String, Object> resources = new ObjectMap<String, Object>();
 		final FreeTypeFontGenerator fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("ui/font.ttf"));
 		final FreeTypeFontGenerator.FreeTypeFontParameter fontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
@@ -99,7 +90,6 @@ public class PooQuest extends Game {
 		}
 		fontGenerator.dispose();
 
-		// load skin
 		final SkinLoader.SkinParameter skinParameter= new SkinLoader.SkinParameter("ui/hud.atlas", resources);
 		assetManager.load("ui/hud.json", Skin.class, skinParameter);
 		assetManager.finishLoading();
@@ -107,7 +97,6 @@ public class PooQuest extends Game {
 
 	}
 
-	// Getters
 	public Skin getSkin() { return skin; }
 	public Stage getStage() { return stage; }
 	public SpriteBatch getSpriteBatch() { return spriteBatch; }
@@ -154,6 +143,10 @@ public class PooQuest extends Game {
 					screenCache.put(screenType, new MusicScreen(this, ScreenType.MENU, resourceManager));
 					setScreen(ScreenType.MUSIC);
 					break;
+                case COMBAT:
+                    screenCache.put(screenType, new CombatScreen(this, resourceManager));
+                    setScreen(ScreenType.COMBAT);
+                    break;
 				default:
 					throw new GdxRuntimeException("Screen " + screenType + " is not recognized");
 			}

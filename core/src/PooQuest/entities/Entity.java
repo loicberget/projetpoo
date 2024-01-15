@@ -16,7 +16,7 @@ import java.util.HashMap;
 public abstract class Entity {
     protected BodyDef bodyDef;
     protected FixtureDef fixtureDef;
-    private static final float baseVelocity = 4f;
+    private static final float baseVelocity = 9f;
     private static final HashMap<Direction, Vector2> directionVectorMap;
     private static final float TILE_SIZE = 1f;
     public static final float TILE_HALF = TILE_SIZE/2;

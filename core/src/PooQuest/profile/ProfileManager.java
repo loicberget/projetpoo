@@ -45,7 +45,7 @@ public class ProfileManager extends ProfileSubject {
         this.isNewProfile = isNewProfile;
     }
 
-    public boolean getIsNewProfile() {
+    public boolean isNewProfile() {
         return this.isNewProfile;
     }
 

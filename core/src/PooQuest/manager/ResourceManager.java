@@ -168,4 +168,8 @@ public class ResourceManager {
             Gdx.app.debug(TAG, "Asset is not loaded; Nothing to unload: " + assetFilenamePath );
         }
     }
+
+    public void unloadALl() {
+        assetManager.clear();
+    }
 }
